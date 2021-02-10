@@ -127,7 +127,7 @@ def opt_str(s0, max_l=15):
 
 def test_str():
 	s0 = 'GP radical net production rate (mole/cm3-s)'
-	print opt_str(s0)
+	print(opt_str(s0))
 
 
 if __name__ == '__main__':

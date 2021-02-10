@@ -35,7 +35,7 @@ def cheminp_extract_rxn_name(line):
     if ('+' in par_L) and (par_L == par_R):
         name = name.replace('('+par_L+')','')
 
-    #print 'extracted name "'+str(name)+'" from line "'+str(line)+'"'
+    #print('extracted name "'+str(name)+'" from line "'+str(line)+'"')
     return name
 
 
@@ -202,7 +202,7 @@ def build_mech(mech_folder,overwrite=False):
             pass
 
     if if_build:
-        print 'building mech...'
+        print('building mech...')
         path_cheminp = os.path.join(mech_folder,'chem.inp')
         path_thermdat = os.path.join(mech_folder,'therm.dat')
         mechanism = read_cheminp(path_cheminp)

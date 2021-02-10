@@ -7,11 +7,11 @@ import time
 import shutil
 import copy
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
-from def_dialog import common
+from .def_dialog import common
 from src.core.def_tools import keys_sorted
 from src.ct.ck2cti_GPS import ck2cti
 

@@ -34,7 +34,7 @@ def union_list(list1, list2):
     return list1 + list(set2 - set1)
 
 def test_union_list():
-    print union_list([1,2,3],[3,4])
+    print(union_list([1,2,3],[3,4]))
 
 
 
@@ -70,9 +70,9 @@ def num2str(num, d):
 
     
 def test_num2str():
-    print num2str(0.1234, 2)
-    print num2str(12.34, 0)
-    print num2str(1000,0)
+    print(num2str(0.1234, 2))
+    print(num2str(12.34, 0))
+    print(num2str(1000,0))
 
 
 
@@ -122,14 +122,14 @@ def test_cond2dir():
     phi = 1.0
     atm = 1
     T0 = 1000
-    print cond2dir(parent, fuel_dict, phi, atm, T0)
+    print(cond2dir(parent, fuel_dict, phi, atm, T0))
 
 """ ---------------------------------- """
 
 
 def avg_mole_per_sec(raw, start_point=0, end_point='eq', constV=False):
 
-    #print type(end_point)
+    #print(type(end_point))
 
     T = raw['temperature']
     x = raw['axis0']

@@ -13,7 +13,7 @@ def find_tau_ign(fld):
 		tau_csv = 'tau_ign.csv'
 
 	if not os.path.exists(folder):
-		print 'no such folder: '+str(folder)
+		print('no such folder: '+str(folder))
 		return False
 
 	list_fat = os.listdir(folder)
@@ -47,5 +47,5 @@ def find_tau_ign(fld):
 
 if __name__ == '__main__':
 	fld = '/Users/xianggao/GPS data/CH4 Suo/reduction/detailed/raw/[CH4] + [air]/'
-	print os.path.exists(fld)
+	print(os.path.exists(fld))
 	find_tau_ign(fld)

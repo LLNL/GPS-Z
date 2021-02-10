@@ -1,7 +1,7 @@
 import cantera as ct
 import numpy as np
 import matplotlib.pyplot as plt
-from def_ct_tools import *
+from .def_ct_tools import *
 import copy
 import os
 import time
@@ -13,7 +13,7 @@ import time
 
 def senkin(soln, atm, T0, X0, if_half=True, dir_raw=None, if_fine=False):
 
-	print 'if_half = '+str(if_half)
+	print('if_half = '+str(if_half))
 
 	#if soln.n_species > 100:
 	#    verbose=True
@@ -28,9 +28,9 @@ def senkin(soln, atm, T0, X0, if_half=True, dir_raw=None, if_fine=False):
 
 	cpu0 = time.time()
 
-	print '>'*30
-	print 'senkin for ['+ X0 + '] at '+ str(atm)+'atm' + ' and '+str(T0)+'K'
-	print '<'*30
+	print('>'*30)
+	print('senkin for ['+ X0 + '] at '+ str(atm)+'atm' + ' and '+str(T0)+'K')
+	print('<'*30)
 	
 	p = ct.one_atm * atm
 
@@ -64,8 +64,8 @@ def senkin(soln, atm, T0, X0, if_half=True, dir_raw=None, if_fine=False):
 	# loop until grid resolution found
 	while i_loop < n_loop:
 		i_loop += 1
-		print '-'*5
-		print 'i_loop = '+str(i_loop)
+		print('-'*5)
+		print('i_loop = '+str(i_loop))
 
 		soln.TPX = T0, p, X0
 		reactor = ct.IdealGasConstPressureReactor(soln)
@@ -79,7 +79,7 @@ def senkin(soln, atm, T0, X0, if_half=True, dir_raw=None, if_fine=False):
 		t = 0
 
 		if verbose:
-			print 'dt0 = '+str(dt)
+			print('dt0 = '+str(dt))
 		T_prev = T0
 
 		ii_add = []
@@ -101,7 +101,7 @@ def senkin(soln, atm, T0, X0, if_half=True, dir_raw=None, if_fine=False):
 				t = float(str(t))
 
 				if verbose:
-					print 'now, '+str(t)
+					print('now, '+str(t))
 
 				# find T at tried t ------------
 				# corresponding data stored in raw_all[i_add]
@@ -111,14 +111,14 @@ def senkin(soln, atm, T0, X0, if_half=True, dir_raw=None, if_fine=False):
 					if (t in raw_all['axis0']):
 						new_sim = False
 						if verbose:
-							print 'calculated before, loaded !!!!!!'
+							print('calculated before, loaded !!!!!!')
 						i_add = raw_all['axis0'].index(t)
 						T = raw_all['temperature'][i_add]
 
 				if new_sim:
 					network.advance(t)
 					if verbose:
-						print 'advanced, T = '+str(soln.T)
+						print('advanced, T = '+str(soln.T))
 					raw_all = soln2raw(t, 'time', soln, raw_all)
 					i_add = len(raw_all['axis0'])-1
 					T = soln.T
@@ -147,20 +147,20 @@ def senkin(soln, atm, T0, X0, if_half=True, dir_raw=None, if_fine=False):
 
 			if if_half:
 				if soln.T - T0 > dT_ign:
-					print 'ignited'
+					print('ignited')
 					tau_ign = t
 					break
 			else:
 				if soln.T - T0 > 1500 and dT < 1:
-					print 'equilibrium reached'
+					print('equilibrium reached')
 					break
 
 
 
 
 	raw = slice_raw(raw_all, ii_add)
-	print 'n_points = ' + str(len(raw['axis0'])) + '/' + str(len(raw_all['axis0']))
-	print 'CPU time = '+str(time.time() - cpu0)
+	print('n_points = ' + str(len(raw['axis0'])) + '/' + str(len(raw_all['axis0'])))
+	print('CPU time = '+str(time.time() - cpu0))
 
 
 	if dir_raw is not None:
@@ -191,14 +191,14 @@ def test_senkin():
 	tt = raw['axis0']
 	TT = raw['temperature']
 	qq = raw['heat_release_rate']
-	#print str(len(tt)) + ' points'
-	#print raw['net_reaction_rate'].shape
+	#print(str(len(tt)) + ' points')
+	#print(raw['net_reaction_rate'].shape)
 
 	plt.plot(qq, TT, marker='o')
 	#plt.savefig(os.path.join(dir_raw,'ign_fine.jpg'))
 	plt.show()
 
-	#print tt[-1]
+	#print(tt[-1])
 
 	#return raw
 

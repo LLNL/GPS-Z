@@ -1,5 +1,6 @@
 
 import sys, copy
+from PyQt5.QtWidgets import *
 import os
 import cantera as ct
 import json
@@ -7,11 +8,11 @@ import time
 import shutil
 import copy
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
-from def_dialog import common
+from .def_dialog import common
 from src.core.def_tools import keys_sorted
 from src.ct.ck2cti_GPS import ck2cti
 
@@ -171,7 +172,7 @@ class dialog_mech(common):
 		else:
 			path_ini = self.parent.project['dir_public']
 
-		path_chem = str(QFileDialog.getOpenFileName(self.w, 'Open File', path_ini))
+		path_chem = QFileDialog.getOpenFileName(self.w, 'Open File', path_ini)[0]
 		if bool(path_chem):
 			self.w.txt_chem.setText(path_chem)
 
@@ -188,7 +189,7 @@ class dialog_mech(common):
 		else:
 			path_ini = self.parent.project['dir_public']
 
-		path_therm = str(QFileDialog.getOpenFileName(self.w, 'Open File', path_ini))
+		path_therm = QFileDialog.getOpenFileName(self.w, 'Open File', path_ini)[0]
 		if bool(path_therm):
 			self.w.txt_therm.setText(path_therm)
 

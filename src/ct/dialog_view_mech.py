@@ -1,5 +1,6 @@
 
 import sys
+from PyQt5.QtWidgets import *
 import os
 import cantera as ct
 import json
@@ -7,9 +8,9 @@ import time
 import shutil
 import copy
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 #from def_tools_gui import *
 from src.core.def_tools import keys_sorted

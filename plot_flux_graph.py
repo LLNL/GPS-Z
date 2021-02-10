@@ -1,7 +1,7 @@
 # author: Xiang Gao (gxiang1228@gmail.com)
 # run with python 2.7 and networkx 1.10
 
-import Queue
+import queue
 import json, os
 from networkx.readwrite import json_graph
 import numpy as np
@@ -24,7 +24,7 @@ def get_edges(fld, traced='C'):
 
 	integral = dict()
 	for i_pnt in range(1, len(tt)):
-		print 'reading point '+str(i_pnt)
+		print('reading point '+str(i_pnt))
 
 		path_graph = os.path.join(fld, 'graph', traced+'_'+str(i_pnt)+'.json')
 		flux_graph = json_graph.node_link_graph(json.load(open(path_graph, 'r')))
@@ -50,7 +50,7 @@ def s2label(s):
 
 def create_gv(edges, path_gv, n_edge, by='width', top=None):
 
-	pq = Queue.PriorityQueue()
+	pq = queue.PriorityQueue()
 	maxflux = 0.
 	for edge in edges:
 		flux = edges[edge]
@@ -62,21 +62,21 @@ def create_gv(edges, path_gv, n_edge, by='width', top=None):
 	end = set()
 	edges = []
 
-	for i in xrange(n_edge):
+	for i in range(n_edge):
 		neg_flux, edge = pq.get()
-		#print edge
+		#print(edge)
 		start.add(edge[0])
 		end.add(edge[1])
 		edges.append((edge[0], edge[1], -neg_flux))
 
-		#print edge, -neg_flux
+		#print(edge, -neg_flux)
 
 	nodes = start & end
 	nodes.add('H2')
 	#nodes.add('CO2')
 
-	#print path_gv
-	#print "nodes",nodes
+	#print(path_gv)
+	#print("nodes",nodes)
 	#return
 	with open(path_gv,'w') as f:
 		f.write('digraph FluxGraphByGPS {\n'+\
@@ -132,9 +132,10 @@ SUB_FONTSIZE = 20
 MAX_WIDTH = 12
 
 if __name__ == '__main__':
-	fld_raw = 'demo/detailed/raw/[H2] + [air]/autoignition/phi1.0_30.0atm_1000.0K'
+	#fld_raw = 'demo/detailed/raw/[H2] + [air]/autoignition/phi1.0_30.0atm_1000.0K'
+	fld_raw = 'detailed/raw/[CH4] + [air]/autoignition/phi1.0_30.0atm_1500.0K'
 	traced = 'H'	# H or C
-	top = 'H2'	# can be None. but usually the fuel
+	top = 'CH4'	# can be None. but usually the fuel
 	main(fld_raw, traced, top=top)
 
 

@@ -1,15 +1,16 @@
 import sys
+from PyQt5.QtWidgets import *
 import os
 import cantera as ct
 import json
 import time
 import copy
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
-from def_dialog import common
+from .def_dialog import common
 from src.core.def_tools import keys_sorted, num2str
 
 class dialog_database_mixture(common):
@@ -32,7 +33,7 @@ class dialog_database_mixture(common):
 
 	def fun_mix_str(self, composition):
 		if len(composition.keys()) == 1:
-			return composition.keys()[0]
+			return list(composition.keys())[0]
 
 		spid = dict()
 		for sp in composition.keys():

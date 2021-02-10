@@ -1,5 +1,6 @@
 
 import sys
+from PyQt5.QtWidgets import *
 import os
 import cantera as ct
 import json
@@ -7,20 +8,20 @@ import time
 import copy
 import matplotlib.pyplot as plt
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 from src.core.def_tools import keys_sorted
 
 from src.gui.def_dialog import *
 from src.gui.dialog_mech import dialog_mech
 
-from dialog_subplot import *
-from def_painter import *
+from .dialog_subplot import *
+from .def_painter import *
 
 
-from def_plt_tools import *
+from .def_plt_tools import *
 
 
 
@@ -275,7 +276,7 @@ class dialog_plot_builder(base_dialog):
 
 		key = self.subkey
 		occupied = self.init_occupied(key=key)
-		print 'plot_builder: occupied = '+str(occupied)
+		print('plot_builder: occupied = '+str(occupied))
 
 		copy_name, ok = QInputDialog.getText(QWidget(), '', 
 			'Name the copy of ' + data_name + ' as:',text=data_name)
@@ -502,7 +503,7 @@ class dialog_plot_GPedge(base_dialog):
 
 
 	def set_GPs(self):
-		print 'set_GPs triggered'
+		print('set_GPs triggered')
 		traced = str(self.w.cb_traced.currentText())
 		if bool(traced):
 			items = []
@@ -657,7 +658,7 @@ class dialog_plot_GPedge(base_dialog):
 		soln = self.parent.soln['detailed']
 
 		print
-		print 'soln.element_names = '+str(soln.element_names)
+		print('soln.element_names = '+str(soln.element_names))
 		print
 
 		self.w_cbs = dict()

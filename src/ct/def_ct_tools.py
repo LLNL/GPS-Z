@@ -33,15 +33,15 @@ def estimate_tau0(T0, atm):
 	mtp = 10 ** np.polyval(coeff_p, np.sqrt(atm))
 
 	tau = tau_1atm * mtp
-	#print 'tau = '+str(tau)
+	#print('tau = '+str(tau))
 	tau_level = 10 ** (np.floor(np.log10(tau)))
-	#print 'tau_level = '+str(tau_level)
+	#print('tau_level = '+str(tau_level))
 	tau_rounded = tau_level * np.round(tau/tau_level * 1.0)/1.0
-	#print 'tau_rounded = '+str(tau_rounded)
-	#print tau_level
-	#print str(tau_rounded)
+	#print('tau_rounded = '+str(tau_rounded))
+	#print(tau_level)
+	#print(str(tau_rounded))
 
-	#print tau_rounded
+	#print(tau_rounded)
 	tau_rounded = max(1e-2, tau_rounded)
 	return float(str(tau_rounded))
 
@@ -57,7 +57,7 @@ def test_est_tau0():
 		for T0 in T0_list:
 			tau.append(estimate_tau0(T0, atm))
 		#plt.semilogy(1000.0/np.array(T0_list), tau, label=str(atm)+'atm', marker=marker[i_atm],fillstyle='none')
-		print tau
+		print(tau)
 
 	plt.legend(loc='lower right')
 	plt.savefig('est_tau.jpg')
@@ -83,6 +83,7 @@ def Xstr(gas, fuel_dict, phi, oxid_dict):
 	for fuel_sp in fuel_dict.keys():
 		val = fuel_dict[fuel_sp]
 		Xstr += (fuel_sp + ':' + str(1.0*val*phi) + ', ')
+		mech()
 		atoms = species(fuel_sp).composition
 		if 'C' in atoms.keys():
 			C_fuel = C_fuel + atoms['C'] * val
@@ -131,7 +132,7 @@ def test_Xstr():
 	mech = 'gri30.xml'
 	fuel_dict = {'CH4':1.0}
 	phi = 2.0
-	print Xstr(mech, fuel_dict, phi)
+	print(Xstr(mech, fuel_dict, phi))
 
 """ --------------------------------- """
 
@@ -272,7 +273,7 @@ def soln2raw(xx, x_type, soln, raw):
 
 	mf = soln.concentrations / sum(soln.concentrations)
 	raw['mole_fraction'].append(mf)
-	#print sum(mf)
+	#print(sum(mf))
 
 	raw['net_reaction_rate'].append(soln.net_rates_of_progress * 1e3)	# original unit is kmole/m3-s
 	raw['heat_release_rate'].append(-sum(soln.delta_enthalpy * soln.net_rates_of_progress))	# J/m3-s

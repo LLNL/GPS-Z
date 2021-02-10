@@ -1,4 +1,4 @@
-from def_build_mech_dict import *
+from .def_build_mech_dict import *
 import os
 import shutil
 

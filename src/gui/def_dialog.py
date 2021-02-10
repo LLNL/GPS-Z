@@ -1,13 +1,14 @@
 import sys
+from PyQt5.QtWidgets import *
 import os
 import cantera as ct
 import json
 import time
 import copy
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 from src.core.def_tools import keys_sorted
 
@@ -65,7 +66,7 @@ class common(object):
 	def init_occupied(self, key=None):
 		if key == None:
 			key = self.key
-		occupied = self.parent.project[key].keys() + \
+		occupied = list(self.parent.project[key].keys()) + \
 			['default','current','detailed','none','true','false','new','no filter']
 		return [o.lower().strip().strip('[]') for o in occupied]
 
@@ -241,7 +242,7 @@ class base_dialog(common):
 		for i_cb in which:
 			obj = self.w_cbs['obj'][i_cb]
 			key = self.w_cbs['key'][i_cb]
-			items = [''] + self.w_cbs['items'][i_cb]
+			items = [''] + list(self.w_cbs['items'][i_cb])
 			index = 0
 
 			obj.clear()
@@ -268,7 +269,7 @@ class base_dialog(common):
 			try:
 				index = val.index(self.data[key])
 			except ValueError:
-				print 'cannot find, '+str(self.data[key])+', in, '+str(val)+'!'*10
+				print('cannot find, '+str(self.data[key])+', in, '+str(val)+'!'*10)
 				index = 0
 
 			obj[index].setChecked(True)

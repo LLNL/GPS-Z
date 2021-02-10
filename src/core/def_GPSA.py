@@ -98,7 +98,7 @@ def	find_GPSA(dir_raw, GP_dict, soln, dnR, fuel_comp, n_break=0):
 	# if not loaded, compute these results
 
 
-	print 'computing GPSA for '+GP_name
+	print('computing GPSA for '+GP_name)
 
 	traced = GP_dict['traced']
 	GP_member = GP_dict['member']
@@ -153,9 +153,9 @@ def	find_GPSA(dir_raw, GP_dict, soln, dnR, fuel_comp, n_break=0):
 
 		perc_from_source = 1.0 * atom_source / total_atom
 
-		#print 'total '+traced+' atoms for '+str(fuel_comp)+' is '+str(total_atom)
-		#print 'source '+str(source)+' has '+str(atom_source)+' atms'
-		#print 'so perc_from_source = '+str(perc_from_source)
+		#print('total '+traced+' atoms for '+str(fuel_comp)+' is '+str(total_atom))
+		#print('source '+str(source)+' has '+str(atom_source)+' atms')
+		#print('so perc_from_source = '+str(perc_from_source))
 
 	#GPSA['perc_ij']['from_source'] = perc_from_source
 
@@ -170,13 +170,13 @@ def	find_GPSA(dir_raw, GP_dict, soln, dnR, fuel_comp, n_break=0):
 		path_graph = os.path.join(dir_graph, traced+'_'+str(i_pnt) + '.json')
 		if not os.path.exists(path_graph): 			
 			if i_pnt>n_break:
-				print 'break as cannot find: '+str(path_graph)
+				print('break as cannot find: '+str(path_graph))
 				break
 			
 			else:			
 				# fill this with None ---------------
 				if i_pnt%10 == 0:
-					print '   fill None GPSA for '+str(path_graph)
+					print('   fill None GPSA for '+str(path_graph))
 
 				for i in range(len(GP_member)-1):
 					s = GP_member[i]
@@ -196,7 +196,7 @@ def	find_GPSA(dir_raw, GP_dict, soln, dnR, fuel_comp, n_break=0):
 
 		soln = raw2soln(soln, raw, i_pnt)	
 		if i_pnt%10 == 0:
-			print '   finding GPSA for '+str(path_graph)
+			print('   finding GPSA for '+str(path_graph))
 
 		# fill this with real value ---------------
 		#norm_Rpro = 0.0

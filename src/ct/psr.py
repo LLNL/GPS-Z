@@ -2,7 +2,7 @@ import cantera as ct
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
-from def_ct_tools import *
+from .def_ct_tools import *
 import sys
 import os
 
@@ -26,7 +26,7 @@ def psr_ss(soln_in, soln_out, p, T0, T, X0, X, tau):
     K = 1.0
     t_end = tau * 100.0
 
-    #print 't_end = '+str(t_end)
+    #print('t_end = '+str(t_end))
 
     soln_out.TPX = T, p, X
     soln_in.TPX = T0, p, X0
@@ -47,7 +47,7 @@ def psr_ss(soln_in, soln_out, p, T0, T, X0, X, tau):
         network.advance(t_end)
     except RuntimeError as e:
 
-        print '@'*10+'\nct.exceptions = \n'+str(e)
+        print('@'*10+'\nct.exceptions = \n'+str(e))
         #sys.exit()
         return None
 
@@ -58,9 +58,9 @@ def S_curve(soln_in, soln_out, atm, T0, X0, dir_raw=None):
 
     #raise
 
-    print '>'*30
-    print 'psr for ['+ X0 + '] at '+ str(atm)+'atm' + ' and '+str(T0)+'K'
-    print '<'*30
+    print('>'*30)
+    print('psr for ['+ X0 + '] at '+ str(atm)+'atm' + ' and '+str(T0)+'K')
+    print('<'*30)
 
     if soln_in.n_species > 100:
         verbose = True
@@ -99,7 +99,7 @@ def S_curve(soln_in, soln_out, atm, T0, X0, dir_raw=None):
         T = soln_i.T
         X = soln_i.concentrations
         if verbose:
-            print str(int(T_ini)) + ', ' + str(int(T)) + ', ' + str(tau)
+            print(str(int(T_ini)) + ', ' + str(int(T)) + ', ' + str(tau))
         if T_burn is None:
             T_burn = T
 
@@ -108,13 +108,13 @@ def S_curve(soln_in, soln_out, atm, T0, X0, dir_raw=None):
             
             if tau_r > 0.999:
                 if verbose:            
-                    print 'finished, tau_r = '+str(tau_r)
+                    print('finished, tau_r = '+str(tau_r))
                 break
             else:
                 tau = tau_burn
                 tau_r = tau_r + (1-tau_r)*0.5
                 if verbose:            
-                    print 'refined, tau_r = '+str(tau_r)
+                    print('refined, tau_r = '+str(tau_r))
         else:
             T_burn = T
             X_ini = X
@@ -143,7 +143,7 @@ def test_single_eq():
     X = 'CH4:1, O2:2, N2:7.52';
 
     soln = psr_ss(mech, p, T0, T, X, X, tau)
-    print soln.T
+    print(soln.T)
 
 
 def test_S_curve():
@@ -159,8 +159,8 @@ def test_S_curve():
     tt = raw['axis0']
     TT = raw['temperature']
 
-    #print raw[0].T
-    #print raw[-1].T
+    #print(raw[0].T)
+    #print(raw[-1].T)
 
     plt.semilogx(tt, TT, marker='o')
     plt.savefig('S_curve.jpg')

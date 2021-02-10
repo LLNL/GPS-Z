@@ -1,19 +1,20 @@
 
 import sys
+from PyQt5.QtWidgets import *
 import os
 import cantera as ct
 import json
 import time
 import copy
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 from src.core.def_tools import keys_sorted
 
-from def_dialog import base_dialog
-from dialog_GPS_es import dialog_GPS_traced
+from .def_dialog import base_dialog
+from .dialog_GPS_es import dialog_GPS_traced
 
 
 

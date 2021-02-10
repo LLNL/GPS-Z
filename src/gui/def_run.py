@@ -1,5 +1,6 @@
 
 import sys
+from PyQt5.QtWidgets import *
 import os
 import json
 import time
@@ -7,9 +8,9 @@ import cantera as ct
 import shutil
 import copy
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 from src.core.def_tools import *
 from src.ct.def_ct_tools import Xstr
@@ -18,13 +19,13 @@ from src.ct.psr import S_curve
 from src.ck.def_cheminp import skeletal
 from src.ct.ck2cti_GPS import ck2cti
 
-from dialog_GPS import dialog_GPS
+from .dialog_GPS import dialog_GPS
 #from dialog_PFA import dialog_PFA
-from dialog_database import dialog_database
-from dialog_mech import dialog_mech
-from dialog_view_mech import dialog_view_mech
+from .dialog_database import dialog_database
+from .dialog_mech import dialog_mech
+from .dialog_view_mech import dialog_view_mech
 
-from find_tau_ign import find_tau_ign
+from .find_tau_ign import find_tau_ign
 
 
 from src.ct.def_ct_tools import load_raw
@@ -111,7 +112,7 @@ def write_sk_inp(species_kept, dir_mech_de, dir_mech_sk, notes):
 
 	species_kept = list(species_kept)
 	n_sp = len(species_kept)
-	print 'total: '+str(n_sp)
+	print('total: '+str(n_sp))
 
 	notes.append('! number of species = '+str(n_sp))
 	skeletal(dir_mech_de, dir_mech_sk, species_kept, notes=notes)
@@ -255,10 +256,10 @@ def raw_single_mech(progress, list_db, parent, dv_mech, v, dir_desk, soln, soln_
 					fld = os.path.join(dir_desk,'raw',
 						'['+fuel_name.strip('[').strip(']')+'] + ['+oxid_name.strip('[').strip(']')+']')
 					find_tau_ign(fld)
-					print
-					print 'find_tau_ign'
-					print 'fld = '+str(fld)
-					print
+					print()
+					print('find_tau_ign')
+					print('fld = '+str(fld))
+					print()
 
 				#print dir_desk
 				#print '@'*20
@@ -357,14 +358,14 @@ def run_graph(parent, progress, task):
 							n_pnt = len(raw['axis0'])
 							dv_pnt = 1.0 * dv_raw / n_pnt
 
-							print 'dir_raw = '+str(dir_raw)
-							print 'n_point = '+str(n_pnt)
+							print('dir_raw = '+str(dir_raw))
+							print('n_point = '+str(n_pnt))
 
 							for i_pnt in range(n_pnt):
 								"""
 								if 'active reactions' in raw.keys() and len(raw['active reactions'])>0:
 									if raw['active reactions'][i_pnt] == 0:
-										print 'skipped pnt '+str(i_pnt)+' as no active reaction'
+										print('skipped pnt '+str(i_pnt)+' as no active reaction')
 										continue
 										"""
 								
@@ -374,7 +375,7 @@ def run_graph(parent, progress, task):
 										info = 'building '+e+'-graph for pnt'+str(i_pnt)+' of '+\
 											str(dir_raw.replace(dir_de,''))
 										if i_pnt%10==0:
-											print info
+											print(info)
 										if n_pnt<100:
 											progress.set_info(info)
 										flux_graph = build_flux_graph(soln, raw, e, \
@@ -382,7 +383,7 @@ def run_graph(parent, progress, task):
 											i0=i_pnt, i1=i_pnt, constV=False)
 									else:
 										if i_pnt % 1e4 == 0 or i_pnt == n_pnt - 1:
-											print 'already exists '+str(path_graph)
+											print('already exists '+str(path_graph))
 										
 
 								v += dv_pnt
@@ -607,7 +608,7 @@ def run_GPS(parent, progress):
 													"""
 													if 'active reactions' in raw.keys():
 														if raw['active reactions'][i_pnt] == 0:
-															print 'skipped pnt '+str(i_pnt)+' as no active reaction'
+															print('skipped pnt '+str(i_pnt)+' as no active reaction')
 															continue
 															"""
 
@@ -632,7 +633,7 @@ def run_GPS(parent, progress):
 
 															for sp in fuel['composition'].keys():
 																atoms = soln.species(sp).composition.keys()
-																#print 'atms of ' + sp + ' = ' +str(atoms)
+																#print('atms of ' + sp + ' = ' +str(atoms))
 																if e in atoms:
 																	sources += [sp]
 
@@ -801,7 +802,7 @@ def run_GPSA(parent, progress):
 	# for different GPS settings ============================
 	# add new GP
 
-		print 'run_GPSA: here0'
+		print('run_GPSA: here0')
 		for GPS_name in list_GPS:
 
 			GPS = parent.project['GPS'][GPS_name]
@@ -875,12 +876,12 @@ def run_GPSA(parent, progress):
 
 													print('added '+traced+'-traced global pathway: '+str(GP_name))
 													
-	print 'run_GPSA: here1'
+	print('run_GPSA: here1')
 	# find all GP ==============================
 	GP_list = []
 
 	filter_traced = str(parent.w.cb_GPSA_traced.currentText())
-	print 'filter_traced = '+str(filter_traced)
+	print('filter_traced = '+str(filter_traced))
 	if filter_traced == 'no filter':
 		ee = parent.soln['detailed'].element_names
 	else:
@@ -913,7 +914,7 @@ def run_GPSA(parent, progress):
 		QMessageBox.information(QWidget(),'',msg)
 		return False
 
-	print 'len(GP_list) = '+str(len(GP_list))
+	print('len(GP_list) = '+str(len(GP_list)))
 
 
 	# for different training set ============================
@@ -984,7 +985,7 @@ def run_GPSA(parent, progress):
 							
 							for traced, GP_name in GP_list:
 								msg = ' '*4+'computing GPSA for '+str(GP_name)
-								print msg
+								print(msg)
 								progress.set_info(msg)
 								GP_dir = parent.project['GP_'+traced][GP_name]									
 								find_GPSA(dir_raw, GP_dir, soln, dnR, fuel_comp, n_break)

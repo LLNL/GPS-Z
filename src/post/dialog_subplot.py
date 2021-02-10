@@ -1,16 +1,17 @@
 
 import sys
+from PyQt5.QtWidgets import *
 import os
 import cantera as ct
 import json
 import time
 import copy
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
-from def_painter import *
+from .def_painter import *
 from src.core.def_tools import keys_sorted, cond2dir, para2dir_GPS
 from src.core.def_GPSA import *
 from src.ct.def_ct_tools import load_raw
@@ -158,7 +159,7 @@ class dialog_plot_db(base_dialog):
 		index = 0
 		current_index = index
 		for db_name in self.parent.project['database'].keys():
-			print 'checking db_name '+str(db_name)
+			print('checking db_name '+str(db_name))
 			self.w.cb_db.addItem(db_name)
 			index += 1
 			if db_name == self.data['db_name']:
@@ -580,7 +581,7 @@ class dialog_GP_alias(base_dialog):
 		self.key = 'GP_' + self.extra['traced']
 		self.init_ui()
 
-		print 'self.key = '+str(self.key)
+		print('self.key = '+str(self.key))
 
 		self.occupied = []
 		for GP_name in self.parent.project[self.key].keys():
@@ -653,12 +654,12 @@ def find_GP_order(dir_raw, traced, parent, sample, method='D_GP'):
 		# sort by source first, then target, then cc
 		ind = np.lexsort((list_GP_cc, list_GP_target, list_GP_source))
 	except ValueError:
-		print list_GP_cc
-		print list_GP_target
-		print list_GP_source
+		print(list_GP_cc)
+		print(list_GP_target)
+		print(list_GP_source)
 		import sys
 		sys.exit()
-	#print 'lexsort OK'
+	#print('lexsort OK')
 
 	if not any_available:
 		msg = 'no '+traced+'-GPSA data is available for\n\n'+str(dir_raw)+\
@@ -764,7 +765,7 @@ class dialog_plot_GP(base_dialog):
 			return None
 		GP_traced = 'GP_' + traced
 		self.data['traced'] = traced
-		print 'updated self.data'
+		print('updated self.data')
 
 		fofat = str(self.w.cb_fofat.currentText())
 		if bool(fofat):
@@ -859,7 +860,7 @@ class dialog_plot_GP(base_dialog):
 				if model.item(j,0).checkState():
 					self.data[GP_traced].append(GP_name)
 			else:
-				print 'cannot find GP whose alias is ' + alias
+				print('cannot find GP whose alias is ' + alias)
 
 		if bool(self.data[GP_traced]) == False:
 			if pop_msg:
@@ -886,7 +887,7 @@ class dialog_plot_GP(base_dialog):
 				break
 
 		if GP_name == None:
-			print 'cannot find GP whose alias is ' + alias
+			print('cannot find GP whose alias is ' + alias)
 			return None
 
 		self.read_table_GP(pop_msg=False)

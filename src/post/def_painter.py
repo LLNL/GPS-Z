@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from PyQt5.QtWidgets import *
 import os
 import cantera as ct
 import json
@@ -22,11 +23,11 @@ import copy
 import numpy as np
 
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
-from def_plt_tools import *
+from .def_plt_tools import *
 
 
 
@@ -51,7 +52,7 @@ def	find_node_edges(dir_raw, node, extra):
 	dir_graph = os.path.join(dir_raw,'graph')
 	while True:
 		path_graph = os.path.join(dir_graph, traced+'_'+str(i_pnt) + '.json')
-		print path_graph
+		print(path_graph)
 
 		if os.path.exists(path_graph):
 			data = json.load(open(path_graph, 'r'))
@@ -141,7 +142,7 @@ def	find_Rrop(dir_raw, n_rxn, role, parent, sample):
 
 	if sample['by'] != 'max':
 		i_sample = find_i_plot(sample['at'], raw, sample_by=sample['by'])
-		print 'Rrop: i_sample = '+str(i_sample)+', T = '+str(raw['temperature'][i_sample])
+		print('Rrop: i_sample = '+str(i_sample)+', T = '+str(raw['temperature'][i_sample]))
 		for id_rxn in range(len(dnR)):
 			rop_sample[id_rxn] = mat_rop[id_rxn][i_sample]
 
@@ -440,8 +441,8 @@ def painter(parent, fig_opt, sub_opt, ax, tp):
 
 	"""
 
-	print '@'*20
-	print 'plotting '+str(sub_opt['name'])
+	print('@'*20)
+	print('plotting '+str(sub_opt['name']))
 
 	dir_public = parent.project['dir_public']
 
@@ -581,7 +582,7 @@ def painter(parent, fig_opt, sub_opt, ax, tp):
 					return False
 
 
-			print 'n_feature = '+str(len(yy))
+			print('n_feature = '+str(len(yy)))
 			for i_feature in range(len(yy)):
 
 				y = yy[i_feature]
@@ -655,10 +656,10 @@ def painter(parent, fig_opt, sub_opt, ax, tp):
 
 
 				if len(y_sorted) == 0:
-					print 'len(y_sorted) === 0'
+					print('len(y_sorted) === 0')
 					return True
 
-				print 'plotting feature '+str(i_feature)
+				print('plotting feature '+str(i_feature))
 
 				label = []
 				if sub_opt['lg_mech']:
@@ -674,12 +675,12 @@ def painter(parent, fig_opt, sub_opt, ax, tp):
 				s_label = ', '.join(label)
 				plot(x_sorted, y_sorted, marker=M, linestyle=LS, color=C,fillstyle='none',label=s_label)
 
-				print '-'*10
-				print sub_opt['name']
-				print s_label
-				print x_sorted
-				print y_sorted
-				print '-'*10	
+				print('-'*10)
+				print(sub_opt['name'])
+				print(s_label)
+				print(x_sorted)
+				print(y_sorted)
+				print('-'*10	)
 
 
 				if sub_opt['word_show']:
@@ -710,7 +711,7 @@ def painter(parent, fig_opt, sub_opt, ax, tp):
 
 	if bool(ylim):
 		ax.set_ylim(ylim)
-		print 'setting ylim = '+str(ylim)
+		print('setting ylim = '+str(ylim))
 	else:
 		ylim = opt_lim(ax, 'y', yscale)
 		ax.set_ylim(ylim)
@@ -889,7 +890,7 @@ def modify_linear(ax, reverse, xy='y'):
 		locs = locs_new
 
 
-	print 'lim_now = '+str(lim_now)
+	print('lim_now = '+str(lim_now))
 
 	if reverse:
 		prefix = -1.0
@@ -926,9 +927,9 @@ def modify_linear(ax, reverse, xy='y'):
 			ax.set_xlim(min(lim_now),max(lim_now))
 
 	if xy == 'y':
-		print 'after modify, lim = '+str(ax.get_ylim())
+		print('after modify, lim = '+str(ax.get_ylim()))
 	else:
-		print 'after modify, lim = '+str(ax.get_xlim())
+		print('after modify, lim = '+str(ax.get_xlim()))
 
 	return ax
 
@@ -1014,7 +1015,7 @@ def find_i_plot(sample_loc, raw, sample_by='T rised (K)'):
 				i_plot = i
 				break
 	else:
-		print 'find_i_plot: reversed, sample_by = '+str(sample_by)
+		print('find_i_plot: reversed, sample_by = '+str(sample_by))
 		for i in range(len(xx)):
 			if xx[i] <= sample_loc:
 				i_plot = i
@@ -1022,7 +1023,7 @@ def find_i_plot(sample_loc, raw, sample_by='T rised (K)'):
 
 
 	if i_plot is None:
-		print 'cannot find i_plot, sample_by = '+str(sample_by)+' max(xx) - min(xx) = '+str(max(xx)-min(xx))+', but sample_loc = '+str(sample_loc)
+		print('cannot find i_plot, sample_by = '+str(sample_by)+' max(xx) - min(xx) = '+str(max(xx)-min(xx))+', but sample_loc = '+str(sample_loc))
 	return i_plot
 
 
@@ -1042,10 +1043,10 @@ def plot_GPedge_mf(soln, GP_dir, opt, raw, path_save, rename, i_plot=None, title
 
 	if opt['xscale'] == 'log':
 		plot = plt.semilogx
-		print 'using log as xscale = '+str(opt['xscale']) 
+		print('using log as xscale = '+str(opt['xscale']) )
 	else:
 		plot = plt.plot
-		print 'using linear as xscale = '+str(opt['xscale']) 
+		print('using linear as xscale = '+str(opt['xscale']) )
 
 	i = 0
 	for sp in GP_dir['member']:
@@ -1069,7 +1070,7 @@ def plot_GPedge_mf(soln, GP_dir, opt, raw, path_save, rename, i_plot=None, title
 	 	title = 'T = '+str(T[i_plot])+', axis0 = '+str(x[i_plot])
 	 	if tau_ign is not None:
 		 	title +=', norm_x = '+str(1.0*x[i_plot]/tau_ign)
-		title+='\n'
+	 	title+="\n"
 	plt.title(title)
 
 
@@ -1083,7 +1084,7 @@ def plot_GPedge_mf(soln, GP_dir, opt, raw, path_save, rename, i_plot=None, title
 
 def plot_GPedge(soln, data, opt, raw, path_save, rename, i_plot=None, title=None):
 
-	print 'plot_GPedge: rename = '+str(rename)
+	print('plot_GPedge: rename = '+str(rename))
 
 	plt.rc('font', **{'family':'Times New Roman'})
 	fig_w = float(opt['fig_w'][0])
@@ -1110,7 +1111,7 @@ def plot_GPedge(soln, data, opt, raw, path_save, rename, i_plot=None, title=None
 	 	title = 'T = '+str(T[i_plot])+', axis0 = '+str(x[i_plot])
  		if tau_ign is not None:
 	 		title +=', norm_x = '+str(1.0*x[i_plot]/tau_ign)
-		title+='\n'
+	 	title+="\n"
 
 	
 

@@ -23,6 +23,7 @@
 # avoid closeEvent
 
 import sys
+from PyQt5.QtWidgets import *
 import os
 import json
 import time
@@ -30,21 +31,21 @@ import cantera as ct
 import shutil
 import copy
 
-from PyQt4 import uic
-from PyQt4.QtGui import * 
-from PyQt4.QtCore import * 
+from PyQt5 import uic
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 #from def_tools_gui import *
 from src.core.def_tools import keys_sorted, num2str
 
-from def_dialog import common
-from dialog_GPS import dialog_GPS
-from dialog_about import dialog_about
-from dialog_database import dialog_database
-from dialog_mech import dialog_mech
-from dialog_view_mech import dialog_view_mech
-from def_run import *
-from dialog_comb_sk import dialog_comb_sk
+from .def_dialog import common
+from .dialog_GPS import dialog_GPS
+from .dialog_about import dialog_about
+from .dialog_database import dialog_database
+from .dialog_mech import dialog_mech
+from .dialog_view_mech import dialog_view_mech
+from .def_run import *
+from .dialog_comb_sk import dialog_comb_sk
 
 from src.post.dialog_post import *
 from src.post.dialog_rename import *

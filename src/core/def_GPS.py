@@ -1,7 +1,7 @@
 import numpy as np
 import networkx as nx
 from src.core.def_yen import k_shortest_paths as yen
-from def_tools import *
+from .def_tools import *
 import os
 from src.core.def_build_graph import *
 
@@ -108,7 +108,7 @@ def GPS_algo(soln, flux_graph, source, target, path_save=None, \
     if not, then compute, save, and return
     -------------------------------- """
 
-    print 'performing GPS'+str(path_save)
+    print('performing GPS: '+str(path_save))
 
     arrow = ' --> '
     global_path = {}
@@ -119,13 +119,16 @@ def GPS_algo(soln, flux_graph, source, target, path_save=None, \
 
     in_deg = flux_graph.in_degree(weight='flux')
     out_deg = flux_graph.out_degree(weight='flux')
+    in_deg = {d[0]: d[1] for d in in_deg}
+    out_deg = {d[0]: d[1] for d in out_deg}
 
-    if normal is 'source':
+    if normal == 'source':
         norm_deg = out_deg[source]
-    elif normal is 'max':
+    elif normal == 'max':
         try:
             norm_deg = max([max(out_deg.values()), max(in_deg.values())])
         except:
+            print('GPS1: failed')
             return {'species':dict()}
 
     score = {node: max(in_deg[node], out_deg[node]) / norm_deg for node in in_deg.keys()}
@@ -144,7 +147,6 @@ def GPS_algo(soln, flux_graph, source, target, path_save=None, \
         species_kept[hub]['by_beta'] = []
 
     if target is not None:
-
 
         for hub in hubs:
             if hub not in hub_GP.keys():
@@ -167,7 +169,7 @@ def GPS_algo(soln, flux_graph, source, target, path_save=None, \
                     pp0 = [p0]
                     pp1 = [p1]
                 except:# nx.NetworkXNoPath:
-                    print 'no path found for: '+str(source)+' --> '+str(hub)+' --> '+str(target)
+                    print('no path found for: '+str(source)+' --> '+str(hub)+' --> '+str(target))
                     pass
 
             if bool(pp0):
@@ -216,18 +218,18 @@ def GPS_algo(soln, flux_graph, source, target, path_save=None, \
                 t = global_path[GP]['member'][isp + 1]
                 st = s + arrow + t
                 if st not in st_list:
-                    #print '-'*10
-                    #print st
+                    #print('-'*10)
+                    #print(st)
                     st_list.append(st)
                     rxn_beta = flux_graph[s][t]['member']
                     sum_beta = sum(rxn_beta.values())
                     rxn_top = keys_sorted(rxn_beta)
                     total_beta = 0.0
                     for rxn in rxn_top:
-                        #print reaction(int(rxn)).equation + ': ' + str(int(rxn_beta[rxn]/sum_beta*100)) +'%'
+                        #print(reaction(int(rxn)).equation + ': ' + str(int(rxn_beta[rxn]/sum_beta*100)) +'%')
                         st_rxn = st + ', ' + reaction(int(rxn)).equation
 
-                        for sp in (reaction(int(rxn)).products.keys() + reaction(int(rxn)).reactants.keys()):
+                        for sp in list(reaction(int(rxn)).products.keys()) + list(reaction(int(rxn)).reactants.keys()):
                             if sp not in species_kept.keys():
                                 species_kept[sp] = {}
                                 species_kept[sp]['by_alpha'] = False
