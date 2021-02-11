@@ -1,3 +1,5 @@
+import os
+import sys
 import cantera as ct
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,9 +11,6 @@ import tempfile
 import subprocess
 import shutil
 
-#TODO: Units
-
-#TODO: Consider pyyaml
 BASE_YML="""
 mechFile: {MECHDIR}/chem.inp
 thermFile: {MECHDIR}/therm.dat
@@ -39,8 +38,7 @@ print_net_rates_of_progress: 1
 continue_after_ignition: 0
 """
 
-ZERORK_EXE='/usr/apps/advcomb/bin/constVolumeWSR_yml.x'
-#ZERORK_EXE='/usr/workspace/whitesid/zerork_testing/cmake/build_intel_Feb2021/inst_dir/bin/constVolumeWSR_yml.x'
+ZERORK_EXE=os.getenv(ZERORK_EXE, default='/usr/apps/advcomb/bin/constVolumeWSR_yml.x')
 
 def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_equations, eps=0.05, dir_raw=None):
     cpu0 = time.time()
@@ -60,7 +58,7 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
     trace_fracs_str = ','.join([str(sp)+": 0" for sp in other_species])
 
     #Write zero-rk input file
-    #Run zerork #TODO: Cantera inteface uses ConstPressureReactor
+    error_return = False
     try:
         tmpdir = tempfile.mkdtemp(dir=dir_desk)
         zerork_out_file=open(os.path.join(tmpdir,'zerork.out'),'a')
@@ -95,6 +93,7 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
         except subprocess.CalledProcessError as e:
             zerork_out_file.write('!!! Warning: ZeroRK exited with non-zero output ({}).\n'.format(e.returncode))
             zerork_out=e.output.split('\n')
+            error_return = True
 
         for line in zerork_out:
             zerork_out_file.write(line+'\n')
@@ -162,8 +161,12 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
 
     #Clean up
     finally:
-        #shutil.rmtree(tmpdir)
+        shutil.rmtree(tmpdir)
         pass
+
+    if(error_return or len(raw['axis0']) == 0):
+        print(f"Zero-rk failed: {atm}, {T0}, {phi}")
+        sys.exit()
 
     raw['net_reaction_rate'] = np.matrix(raw['net_reaction_rate']) * 1.0e3 #convert to mol/m^3/s
     raw['mole_fraction'] = np.matrix(raw['mole_fraction'])
