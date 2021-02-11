@@ -7,6 +7,7 @@ import time
 import cantera as ct
 import shutil
 import copy
+from multiprocessing import Pool
 
 from PyQt5 import uic
 from PyQt5.QtGui import *
@@ -135,7 +136,7 @@ def write_sk_inp(species_kept, dir_mech_de, dir_mech_sk, notes):
 
 def find_raw(soln, soln_in, dir_desk, fuel, \
     oxid, phi, atm, T0, reactor, n_digit):
-
+    
     dir_raw = cond2dir(dir_desk, fuel['name'], oxid['name'], phi, atm, T0, reactor, n_digit)
     if not os.path.exists(dir_raw):
         os.makedirs(dir_raw)
@@ -145,6 +146,9 @@ def find_raw(soln, soln_in, dir_desk, fuel, \
     elif reactor == 'PSR extinction':
         X0 = Xstr(soln, fuel['composition'], phi, oxid['composition'])    
         S_curve(soln_in, soln, atm, T0, X0, dir_raw=dir_raw)
+
+
+
 
 
 
@@ -195,11 +199,39 @@ def run_train(parent, progress):
 """ >>>>>>>>>>>>>------------------------------------------------
 """
 
+pool_soln = None
+pool_soln_in = None
+def do_run(inputs):
+    #TODO: Create new solns (problem is soln is not pickle-able)
+    global pool_soln
+    global pool_soln_in
+    soln = pool_soln
+    soln_in = pool_soln_in
 
+    fuel_name, fuel, oxid_name, oxid, phi, atm, T0, dir_desk, reactor, n_digit = inputs
+
+    dir_raw = cond2dir(dir_desk, fuel_name, oxid_name, phi, atm, T0, \
+        reactor, n_digit)
+    path_raw = os.path.join(dir_raw,'raw.npz')
+
+    if os.path.exists(path_raw):
+        #progress.set_info('<already exists, skipped> '+dir_raw)
+        pass
+    else:
+        #progress.set_info(dir_raw)
+        find_raw(soln, soln_in,\
+            dir_desk, fuel,    oxid, phi, atm, T0, reactor, n_digit)
+    #TODO: progress bar
+    #v += dv_raw
+    #progress.set_value(bar, v)
 
 
 
 def raw_single_mech(progress, list_db, parent, dv_mech, v, dir_desk, soln, soln_in, bar='train'):
+    global pool_soln
+    global pool_soln_in
+    pool_soln = soln
+    pool_soln_in = soln_in
 
     dv_db = 1.0 * dv_mech /len(list_db)
 
@@ -218,34 +250,24 @@ def raw_single_mech(progress, list_db, parent, dv_mech, v, dir_desk, soln, soln_
         
         progress.set_info('\n' + '-'*10 + ' database: ' + db_name + ' ' + '-'*10)
 
+        inputs_array = []
         for fuel_name in fuel_list:
+            fuel = parent.project['fuel'][fuel_name]
+            print(fuel)
             for oxid_name in oxid_list:
+                oxid = parent.project['oxid'][oxid_name]
                 for phi in phi_list:
                     for atm in atm_list:
                         for T0 in T0_list:
+                            inputs_array.append([fuel_name, fuel, oxid_name,
+                            oxid, phi, atm, T0, dir_desk, reactor,
+                            parent.n_digit])
 
-                            if progress.stop:
-                                progress.close()
-                                return False
+        with Pool() as p:
+            p.map(do_run, inputs_array)
 
-                            fuel = parent.project['fuel'][fuel_name]
-                            oxid = parent.project['oxid'][oxid_name]
-
-                            dir_raw = cond2dir(dir_desk, fuel_name, oxid_name, phi, atm, T0, \
-                                reactor, parent.n_digit)
-                            path_raw = os.path.join(dir_raw,'raw.npz')
-
-                            if os.path.exists(path_raw):
-                                progress.set_info('<already exists, skipped> '+dir_raw)
-                            else:
-                                progress.set_info(dir_raw)
-                                find_raw(soln, soln_in,\
-                                    dir_desk, fuel,    oxid, phi, atm, T0, reactor, parent.n_digit)
-
-                            v += dv_raw
-                            progress.set_value(bar, v)
-
-                #print '@'*20
+        for fuel_name in fuel_list:
+            for oxid_name in oxid_list:
                 if 'autoignition' in reactor:
                     fld = os.path.join(dir_desk,'raw',
                         '['+fuel_name.strip('[').strip(']')+'] + ['+oxid_name.strip('[').strip(']')+']')
@@ -254,14 +276,6 @@ def raw_single_mech(progress, list_db, parent, dv_mech, v, dir_desk, soln, soln_
                     print('find_tau_ign')
                     print('fld = '+str(fld))
                     print()
-
-                #print dir_desk
-                #print '@'*20
-    #sys.exit()
-    #fld = os.path.join(dir_desk,)
-
-
-
 
     return v
 
