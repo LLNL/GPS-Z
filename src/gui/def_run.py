@@ -292,10 +292,14 @@ def raw_single_mech(progress, list_db, parent, dv_mech, v, dir_desk, soln, soln_
 
 
 
+def do_graph(inputs):
+    global pool_soln
+    soln = pool_soln
+    raw, e, path_graph, i_pnt, dir_raw, dir_de = inputs
 
-
-
-
+    print(f'building {e}-graph for pnt {i_pnt} of {dir_raw.replace(dir_de,"")}')
+    build_flux_graph(soln, raw, e, path_save=path_graph, overwrite=False,
+                     i0=i_pnt, i1=i_pnt, constV=False)
 
 
 
@@ -347,16 +351,13 @@ def run_graph(parent, progress, task):
 
         dv_raw = dv_db / (len(phi_list) * len(atm_list) * len(T0_list) *\
             len(fuel_list) * len(oxid_list))
-        
+
+        inputs_list = []
         for fuel_name in fuel_list:
             for oxid_name in oxid_list:
                 for phi in phi_list:
                     for atm in atm_list:
                         for T0 in T0_list:
-
-                            if progress.stop:
-                                progress.close()
-                                return False
 
                             dir_de = os.path.join(dir_public,'detailed')
                             dir_raw = cond2dir(dir_de, fuel_name, \
@@ -382,27 +383,22 @@ def run_graph(parent, progress, task):
                                         print('skipped pnt '+str(i_pnt)+' as no active reaction')
                                         continue
                                         """
-                                
+
                                 for e in traced_list:
                                     path_graph = os.path.join(dir_graph, e+'_'+str(i_pnt)+'.json')
                                     if not os.path.exists(path_graph):
-                                        info = 'building '+e+'-graph for pnt'+str(i_pnt)+' of '+\
-                                            str(dir_raw.replace(dir_de,''))
-                                        if i_pnt%10==0:
-                                            print(info)
-                                        if n_pnt<100:
-                                            progress.set_info(info)
-                                        flux_graph = build_flux_graph(soln, raw, e, \
-                                            path_save=path_graph, overwrite=False, \
-                                            i0=i_pnt, i1=i_pnt, constV=False)
+                                        inputs_list.append([raw,e, path_graph,i_pnt,dir_raw, dir_de])
                                     else:
                                         if i_pnt % 1e4 == 0 or i_pnt == n_pnt - 1:
                                             print('already exists '+str(path_graph))
-                                        
 
                                 v += dv_pnt
                                 if n_pnt<100:
                                     progress.set_value(task,v)
+
+
+        with Pool() as p:
+            p.map(do_graph, inputs_list)
 
     obj.setText(task)
     progress.set_value(task,0.0)
