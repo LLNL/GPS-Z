@@ -55,7 +55,7 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
     for sp in species_names:
         if sp not in fuel_fracs and sp not in oxid_fracs:
             other_species.append(sp)
-    trace_fracs_str = ','.join([str(sp)+": 0" for sp in other_species])
+    trace_fracs_str = ',\n'.join([str(sp)+": 0" for sp in other_species])
 
     #Write zero-rk input file
     error_return = False
@@ -155,18 +155,17 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
             print("No data file from ZeroRK, ZeroRK output was:")
             for line in zerork_out:
                 print("\t", line)
-            sys.exit()
+            raise ValueError
 
         zerork_out_file.close()
 
     #Clean up
     finally:
         shutil.rmtree(tmpdir)
-        pass
 
     if(error_return or len(raw['axis0']) == 0):
         print(f"Zero-rk failed: {atm}, {T0}, {phi}")
-        sys.exit()
+        raise ValueError
 
     raw['net_reaction_rate'] = np.matrix(raw['net_reaction_rate']) * 1.0e3 #convert to mol/m^3/s
     raw['mole_fraction'] = np.matrix(raw['mole_fraction'])
