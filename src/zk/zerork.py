@@ -42,7 +42,7 @@ continue_after_ignition: 0
 #ZERORK_EXE='/usr/apps/advcomb/bin/constVolumeWSR_yml.x'
 ZERORK_EXE='/usr/workspace/whitesid/zerork_testing/cmake/build_intel_Feb2021/inst_dir/bin/constVolumeWSR_yml.x'
 
-def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_equations, dir_raw=None):
+def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_equations, eps=0.05, dir_raw=None):
     cpu0 = time.time()
 
     print('>'*30)
@@ -169,7 +169,11 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
     raw['mole_fraction'] = np.matrix(raw['mole_fraction'])
 
     ign_delay = raw['axis0'][-1]
-    resample_time = np.linspace(0, ign_delay, 100);
+    rdp_array = [ np.array([x,y]) for x,y in zip(raw['axis0'],raw['temperature']) ]
+    resampled = rdp(rdp_array, epsilon=eps*ign_delay)
+
+    #resample_time = np.linspace(0, ign_delay, 100)
+    resample_time = np.array([ x[0] for x in resampled ])
     for key in ['temperature', 'pressure', 'volume', 'mole', 'heat_release_rate']:
         out = np.interp(resample_time, raw['axis0'], raw[key])
         raw[key] = out

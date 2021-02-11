@@ -4,6 +4,57 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+#rdp code adapted from Dan Shiffman ("The Coding Train")'s Processing version:
+#https://github.com/CodingTrain/website/blob/main/CodingChallenges/CC_152_RDP_Algorithm/Processing/CC_152_RDP/CC_152_RDP.pde
+#https://www.youtube.com/watch?v=nSYw9GrakjY
+#Original code is MIT license
+#(accessed 20210211)
+
+def rdp(points, epsilon):
+    rdp_points = []
+    rdp_points.append(points[0])
+    rdp_inner(0, len(points)-1, points, rdp_points, epsilon)
+    rdp_points.append(points[-1])
+    return rdp_points
+
+def rdp_inner(startIndex, endIndex, allPoints,  rdpPoints, epsilon):
+    nextIndex = findFurthest(allPoints, startIndex, endIndex, epsilon)
+    if (nextIndex > 0):
+        if (startIndex != nextIndex):
+            rdp_inner(startIndex, nextIndex, allPoints, rdpPoints, epsilon)
+        rdpPoints.append(allPoints[nextIndex])
+        if (endIndex != nextIndex):
+            rdp_inner(nextIndex, endIndex, allPoints, rdpPoints, epsilon)
+
+def findFurthest(points, a, b, epsilon):
+    start = points[a]
+    end = points[b]
+    furthestIndex = -1
+    recordDistance = -1
+    for i in  range(a+1,b):
+        currentPoint = points[i]
+        d = lineDist(currentPoint, start, end)
+        if(d > recordDistance):
+            recordDistance = d
+            furthestIndex = i
+    if (recordDistance > epsilon):
+        return furthestIndex
+    else:
+        return -1
+
+def lineDist(c, a, b):
+    norm = scalarProjection(c, a, b)
+    return np.linalg.norm(c-norm)
+
+def scalarProjection(p, a, b):
+    ap = p - a
+    ab = b - a
+    ab /= np.linalg.norm(ab)
+    ab *= np.dot(ap,ab)
+    normalPoint = a+ab
+    return normalPoint;
+
+
 
 def estimate_tau0(T0, atm):
 
