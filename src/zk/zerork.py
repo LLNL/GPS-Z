@@ -78,6 +78,8 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
                 TRACE_FRACS=trace_fracs_str))
 
         zerork_out=''
+        env = dict(os.environ)
+        env["ZERORK_SPLIT_REVERSIBLE_REACTIONS"] = str(1)
         try:
             #if('mpi_procs' in params and params['mpi_procs'] > 1 and self.zerork_mpi_exe):
             #    np=str(params['mpi_procs'])
@@ -89,7 +91,7 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
             #                                       universal_newlines=True).split('\n')
             #else:
             zerork_out=subprocess.check_output([ZERORK_EXE,zerork_infile_name],
-                                                stderr=subprocess.STDOUT,universal_newlines=True).split('\n')
+                                                stderr=subprocess.STDOUT,universal_newlines=True, env=env).split('\n')
         except subprocess.CalledProcessError as e:
             zerork_out_file.write('!!! Warning: ZeroRK exited with non-zero output ({}).\n'.format(e.returncode))
             zerork_out=e.output.split('\n')
