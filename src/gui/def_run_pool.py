@@ -754,6 +754,11 @@ def run_GPS(parent, progress):
                                                 raw = load_raw(os.path.join(dir_raw,'raw.npz'))
                                                 T = raw['temperature']
 
+                                                fuel = parent.project['fuel'][fuel_name]
+                                                oxid = parent.project['oxid'][oxid_name]
+                                                species_kept |= set(fuel['composition'].keys())
+                                                species_kept |= set(oxid['composition'].keys())
+
                                                 e_available = set()
                                                 for sp in fuel['composition'].keys():
                                                     e_available |= set(soln.species(sp).composition.keys())
