@@ -81,7 +81,7 @@ class dialog_progress(object):
 
     def __init__(self, parent):
         ui_name = 'progress.ui'
-        self.parent = parent        
+        self.parent = parent
         self.stop = False
         self.verbose = False
         self.dir_public = self.parent.project['dir_public']
@@ -98,15 +98,36 @@ class dialog_progress(object):
         self.parent.app.processEvents()
         self.w.show()
 
-
-
+class dialog_progress_headless(object):
+    def set_value(self, task, value):
+        pass
+    def set_info(self, new_info):
+        pass
+    def act_verbose(self):
+        pass
+    def act_stop(self):
+        pass
+    def close(self):
+        pass
+    class _w(object):
+        class label(object):
+            def __init__(self):
+                pass
+            def setText(*args,**kwargs):
+                pass
+        def __init__(self):
+            self.label_test = self.label()
+            self.label_GPS = self.label()
+            self.label_GPSA = self.label()
+    def __init__(self, parent):
+        self.parent = parent
+        self.stop = False
+        self.verbose = False
+        self.w = self._w()
 
 
 """ >>>>>>>>>>>>>------------------------------------------------
 """
-
-
-
 
 
 
@@ -345,7 +366,7 @@ def run_graph(parent, progress, task):
 
         dv_raw = dv_db / (len(phi_list) * len(atm_list) * len(T0_list) *\
             len(fuel_list) * len(oxid_list))
-
+        
         inputs_list = []
         for fuel_name in fuel_list:
             for oxid_name in oxid_list:
@@ -377,7 +398,7 @@ def run_graph(parent, progress, task):
                                         print('skipped pnt '+str(i_pnt)+' as no active reaction')
                                         continue
                                         """
-
+                                
                                 for e in traced_list:
                                     path_graph = os.path.join(dir_graph, e+'_'+str(i_pnt)+'.json')
                                     if not os.path.exists(path_graph):
@@ -385,6 +406,7 @@ def run_graph(parent, progress, task):
                                     else:
                                         if i_pnt % 1e4 == 0 or i_pnt == n_pnt - 1:
                                             print('already exists '+str(path_graph))
+                                        
 
                                 v += dv_pnt
                                 if n_pnt<100:
@@ -523,6 +545,8 @@ def run_GPS(parent, progress):
             for beta in beta_list:
                 for alpha in alpha_list:
                     for gamma in gamma_list:
+
+
                         dir_sk = para2dir_GPS(dir_public, train_name, \
                             alpha=alpha, K=K, beta=beta, \
                             es_name=es_name, iso_name=iso_name, \
@@ -545,9 +569,11 @@ def run_GPS(parent, progress):
                         notes.append('! training database: '+train_name)
 
 
+
                         # for different training database ============================
 
                         for db_name in list_train:
+
                             database = parent.project['database'][db_name]
                             phi_list = database['phi']
                             T0_list = database['T0']
@@ -570,6 +596,8 @@ def run_GPS(parent, progress):
                                                 for sp in oxid['composition'].keys():
                                                     e_available |= set(soln.species(sp).composition.keys())
 
+
+
                                                 dir_raw = cond2dir(dir_de, fuel_name, \
                                                     oxid_name, phi, atm, T0, \
                                                     reactor, parent.n_digit)
@@ -581,7 +609,7 @@ def run_GPS(parent, progress):
                                                 raw_name = cond2dir('', fuel_name, \
                                                     oxid_name, phi, atm, T0, \
                                                     reactor, parent.n_digit)
-
+                                                
                                                 if 'DNS' in reactor:
                                                     raw_name += '/' + database['case'][0]
 
@@ -593,6 +621,9 @@ def run_GPS(parent, progress):
                                                 raw = load_raw(os.path.join(dir_raw,'raw.npz'))
                                                 T = raw['temperature']
                                                 axis0 = raw['axis0']
+
+                                                
+
 
                                                 # for different time instance ================
 
@@ -620,6 +651,7 @@ def run_GPS(parent, progress):
                                                         if abs(T[i_pnt]-T[0])>min_dT:
                                                             flag = True
 
+
                                                     # for different source->target ==============
 
                                                     for e in traced_list:
@@ -640,6 +672,7 @@ def run_GPS(parent, progress):
                                                                 if e in atoms:
                                                                     sources += [sp]
 
+
                                                         targets = es['element'][e]['target']
                                                         if bool(targets) == False:
                                                             targets = [None]
@@ -653,7 +686,7 @@ def run_GPS(parent, progress):
                                                                 inputs_array.append([path_graph, dir_raw, e, i_pnt, flag,
                                                                         source, target, path_gps, K, alpha,
                                                                         beta, iso, gamma]) 
-
+                                                                
 
         global pool_soln
         pool_soln = soln
@@ -675,7 +708,7 @@ def run_GPS(parent, progress):
                         path_cti_sk = os.path.join(dir_mech_sk,'chem.cti')
 
                         if os.path.exists(path_cti_sk):
-                            continue
+                                                                    continue
 
                         dir_de = os.path.join(dir_public,'detailed')
                         dir_mech_de = os.path.join(dir_de,'mech')
@@ -744,10 +777,11 @@ def run_GPS(parent, progress):
                         # generate chem.inp ***************
                         write_sk_inp(species_kept, dir_mech_de, dir_mech_sk, notes)
                         #"""
-
+    
     assert(result_idx == len(results))
     progress.set_value('GPS', 100)
     return True
+
 
 
 
