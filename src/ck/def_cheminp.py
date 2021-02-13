@@ -38,7 +38,7 @@ def skeletal(detailed_folder, sk_folder, species_kept, notes=None):
 	f.write('\n')
 
 	f.write('ELEMENTS\n')
-	for e in mech['element'].keys():
+	for e in sorted(mech['element'].keys()):
 		f.write(e + ' ')
 	f.write('\nEND\n\n')
 
@@ -46,7 +46,7 @@ def skeletal(detailed_folder, sk_folder, species_kept, notes=None):
 
 	f.write('SPECIES\n')
 	n = 0
-	for s in species_kept:
+	for s in sorted(species_kept):
 		f.write(s + ' ')
 		n += 1
 		if n == 5:
