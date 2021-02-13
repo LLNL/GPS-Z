@@ -38,7 +38,7 @@ def skeletal(detailed_folder, sk_folder, species_kept, notes=None):
 	f.write('\n')
 
 	f.write('ELEMENTS\n')
-	for e in sorted(mech['element'].keys()):
+	for e in mech['element'].keys():
 		f.write(e + ' ')
 	f.write('\nEND\n\n')
 
@@ -46,7 +46,7 @@ def skeletal(detailed_folder, sk_folder, species_kept, notes=None):
 
 	f.write('SPECIES\n')
 	n = 0
-	for s in sorted(species_kept):
+	for s in species_kept:
 		f.write(s + ' ')
 		n += 1
 		if n == 5:
@@ -69,7 +69,7 @@ def skeletal(detailed_folder, sk_folder, species_kept, notes=None):
 
 				if '/' in info and \
 					('LOW' not in info.upper()) and ('TROE' not in info.upper()) \
-					and ('REV' not in info.upper()):
+					 and ('PLOG' not in info.upper()) and ('REV' not in info.upper()):
 
 					# this line describes three-body collision * efficiency *
 					# we should remove these not included in mech
@@ -81,7 +81,6 @@ def skeletal(detailed_folder, sk_folder, species_kept, notes=None):
 						if s in species_kept:
 							info += (ss[i] + '/' + ss[i+1] + '/')
 					
-
 				f.write(info.strip() + '\n')
 				n_ln += 1
 			if n_ln > 1:
