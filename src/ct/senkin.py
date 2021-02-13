@@ -8,7 +8,7 @@ import time
 
 
 
-
+CONSTANT_VOLUME = bool(os.getenv("GPS_CANTERA_CV",False))
 
 
 def senkin(soln, atm, T0, X0, if_half=True, dir_raw=None, if_fine=False):
@@ -68,7 +68,10 @@ def senkin(soln, atm, T0, X0, if_half=True, dir_raw=None, if_fine=False):
 		print('i_loop = '+str(i_loop))
 
 		soln.TPX = T0, p, X0
-		reactor = ct.IdealGasConstPressureReactor(soln)
+		if(CONSTANT_VOLUME):
+			reactor = ct.IdealGasReactor(soln)
+		else:
+			reactor = ct.IdealGasConstPressureReactor(soln)
 		network = ct.ReactorNet([reactor])
 
 		if i_loop == 2:
