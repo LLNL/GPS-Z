@@ -81,7 +81,7 @@ def fun_parse_rxn(name, species):
             s =ns[i:]
             if s.lower() != 'm':
                 if i > 0:
-                    n = int(ns[:i])
+                    n = float(ns[:i])
                 else:
                     n = 1
 
