@@ -38,7 +38,7 @@ print_net_rates_of_progress: 1
 continue_after_ignition: 0
 """
 
-ZERORK_EXE=os.getenv("ZERORK_EXE", default='/usr/apps/advcomb/bin/constVolumeWSR_yml.x')
+ZERORK_EXE=os.getenv("ZERORK_EXE", default='/usr/apps/advcomb/bin/constVolumeWSR.x')
 
 def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_equations, eps=0.05, dir_raw=None):
     cpu0 = time.time()
