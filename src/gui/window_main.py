@@ -301,7 +301,8 @@ class window_main(common):
 		self.w = self.w
 		dir_parent = self.dir_parent
 
-		dir_public = str(QFileDialog.getExistingDirectory(self.w, '', dir_parent.replace('Contents/Resources','')))
+
+		dir_public = str(QFileDialog.getExistingDirectory(self.w, '', dir_parent.replace('Contents/Resources',''), QFileDialog.ShowDirsOnly))
 		if bool(dir_public):
 
 
