@@ -42,6 +42,13 @@ from src.core.def_GPSA import find_GPSA
      called by: window_main
 """
 
+def PoolWrapper(*args, **kwargs):
+    try:
+        p = int(os.environ['GPS_NUM_PROCS'])
+        return Pool(p, *args, **kwargs)
+    except:
+        return Pool(*args, **kwargs)
+
 
 class dialog_progress(object):
 
@@ -301,7 +308,7 @@ def raw_single_mech(progress, list_db, parent, dv_mech, v, dir_desk, soln, soln_
                             oxid, phi, atm, T0, dir_desk, reactor,
                             parent.n_digit])
 
-        with Pool() as p:
+        with PoolWrapper() as p:
             p.map(do_run, inputs_array)
 
         for fuel_name in fuel_list:
@@ -424,7 +431,7 @@ def run_graph(parent, progress, task):
                                     progress.set_value(task,v)
 
 
-        with Pool() as p:
+        with PoolWrapper() as p:
             p.map(do_graph, inputs_list)
 
     obj.setText(task)
@@ -701,7 +708,7 @@ def run_GPS(parent, progress):
 
         global pool_soln
         pool_soln = soln
-        with Pool() as p:
+        with PoolWrapper() as p:
             results = p.map(do_GPS_run, inputs_array)
 
         result_idx = 0
