@@ -15,7 +15,8 @@ BASE_YML="""
 mechFile: {MECHDIR}/chem.inp
 thermFile: {MECHDIR}/therm.dat
 idtFile: {IDTFILE}
-thistFile: {THFILE}
+#thistFile: {THFILE}
+thistFile: /dev/null
 logFile: {CKFILE}
 fuel_mole_fracs: {{ {FUEL_FRACS} }}
 oxidizer_mole_fracs: {{ {OXID_FRACS} }}
@@ -61,8 +62,6 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
     error_return = False
     try:
         tmpdir = tempfile.mkdtemp(dir=dir_desk)
-        zerork_out_file=open(os.path.join(tmpdir,'zerork.out'),'a')
-        zerork_out_file.write('!!! Running ZeroRK !!!\n')
         zerork_infile_name = os.path.join(tmpdir,'zerork.yml')
         with open(zerork_infile_name,'w') as infile:
             infile.write(BASE_YML.format(
@@ -77,7 +76,7 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
                 FUEL_FRACS=fuel_fracs_str,
                 TRACE_FRACS=trace_fracs_str))
 
-        zerork_out=''
+        zerork_out=[]
         env = dict(os.environ)
         env["ZERORK_SPLIT_REVERSIBLE_REACTIONS"] = str(1)
         try:
@@ -92,13 +91,18 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
             #else:
             zerork_out=subprocess.check_output([ZERORK_EXE,zerork_infile_name],
                                                 stderr=subprocess.STDOUT,universal_newlines=True, env=env).split('\n')
+
         except subprocess.CalledProcessError as e:
+            zerork_out_file=open(os.path.join(tmpdir,'zerork.out'),'a')
+            zerork_out_file.write('!!! Running ZeroRK !!!\n')
             zerork_out_file.write('!!! Warning: ZeroRK exited with non-zero output ({}).\n'.format(e.returncode))
             zerork_out=e.output.split('\n')
             error_return = True
 
-        for line in zerork_out:
-            zerork_out_file.write(line+'\n')
+            for line in zerork_out:
+                zerork_out_file.write(line+'\n')
+
+            zerork_out_file.close()
 
         start_data=False
         calc_species = []
@@ -116,42 +120,41 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
         #TODO: Parsing for sweeps (i.e. run_id != 0)
         nrxn = 0
         try:
-            with open(os.path.join(tmpdir,'zerork.thist'),'r') as datfile:
-                for line in datfile:
-                    if len(line) <= 1:
-                        if start_data: break #done with first block break out
-                        start_data = False
-                        continue
-                    if line[0] != '#':
-                        start_data = True
-                    if "run id" in line:
-                        tokens = line.split()
-                        tmp_list = []
-                        for i,tok in enumerate(tokens):
-                            if tok == "mlfrc":
-                                tmp_list.append(tokens[i+1])
-                            if tok == "rop":
-                                nrxn += 1
-                        if len(tmp_list) > 0:
-                            calc_species.append(tmp_list)
-                    if start_data:
-                        nsp_log = len(calc_species[0])
-                        vals = list(map(float,line.split()))
-                        raw['axis0'].append(vals[1])
-                        raw['temperature'].append(vals[2])
-                        raw['pressure'].append(vals[3])
-                        raw['volume'].append(1/vals[4])
-                        raw['mole_fraction'].append(vals[8:8+nsp_log])
-                        raw['net_reaction_rate'].append(vals[8+nsp_log:8+nsp_log+nrxn])
-                        raw['mole'].append(vals[5]/vals[6]*1e3) #density / molecular weight => inverse molar volume
-                        raw['heat_release'].append(vals[8])
-                        if len(raw['axis0']) > 1:
-                            hrr = -(raw['heat_release'][-1] - raw['heat_release'][-2])
-                            hrr /= raw['axis0'][-1] - raw['axis0'][-2]
-                            hrr /= vals[4] #volumetric heat release
-                            raw['heat_release_rate'].append(hrr)
-                        else:
-                            raw['heat_release_rate'].append(0)
+            for line in zerork_out:
+                if len(line) <= 1:
+                    if start_data: break #done with first block break out
+                    start_data = False
+                    continue
+                if line[0] != '#':
+                    start_data = True
+                if "run id" in line:
+                    tokens = line.split()
+                    tmp_list = []
+                    for i,tok in enumerate(tokens):
+                        if tok == "mlfrc":
+                            tmp_list.append(tokens[i+1])
+                        if tok == "rop":
+                            nrxn += 1
+                    if len(tmp_list) > 0:
+                        calc_species.append(tmp_list)
+                if start_data:
+                    nsp_log = len(calc_species[0])
+                    vals = list(map(float,line.split()))
+                    raw['axis0'].append(vals[1])
+                    raw['temperature'].append(vals[2])
+                    raw['pressure'].append(vals[3])
+                    raw['volume'].append(1/vals[4])
+                    raw['mole_fraction'].append(vals[8:8+nsp_log])
+                    raw['net_reaction_rate'].append(vals[8+nsp_log:8+nsp_log+nrxn])
+                    raw['mole'].append(vals[5]/vals[6]*1e3) #density / molecular weight => inverse molar volume
+                    raw['heat_release'].append(vals[8])
+                    if len(raw['axis0']) > 1:
+                        hrr = -(raw['heat_release'][-1] - raw['heat_release'][-2])
+                        hrr /= raw['axis0'][-1] - raw['axis0'][-2]
+                        hrr /= vals[4] #volumetric heat release
+                        raw['heat_release_rate'].append(hrr)
+                    else:
+                        raw['heat_release_rate'].append(0)
 
         except IOError:
             print("No data file from ZeroRK, ZeroRK output was:")
@@ -159,7 +162,6 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
                 print("\t", line)
             raise ValueError
 
-        zerork_out_file.close()
 
     #Clean up
     finally:
