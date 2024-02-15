@@ -55,27 +55,26 @@ def fun_cleanck(dir_desk_mech):
 
 		ln = ln0.rstrip()
 
-		if bool(ln):
-
-			if ln[0] == '!':
-				status = 0
-			elif len(ln)>70 and ln[-1] in ['1','2','3','4']:
-				status = int(ln[-1])
-				if len(ln) < reg_len:
-					ln = ln[:-2] + ' '*(reg_len - len(ln)) + ln[-2:]
-				elif len(ln) > reg_len:
-					ln = ln[:-2 - (len(ln)-reg_len)] + ln[-2:]
-			else:
-				if prev_status == 3:
-					ln = ln + ' '*(reg_len-len(ln)-1) + '4'
-					status = 4
-				else:
-					status = None
+		#if bool(ln):
+			#if ln[0] == '!':
+			#	status = 0
+			#elif len(ln)>70 and ln[-1] in ['1','2','3','4']:
+			#	status = int(ln[-1])
+			#	if len(ln) < reg_len:
+			#		ln = ln[:-2] + ' '*(reg_len - len(ln)) + ln[-2:]
+			#	elif len(ln) > reg_len:
+			#		ln = ln[:-2 - (len(ln)-reg_len)] + ln[-2:]
+			#else:
+			#	if prev_status == 3:
+			#		ln = ln + ' '*(reg_len-len(ln)-1) + '4'
+			#		status = 4
+			#	else:
+			#		status = None
 
 
 		ln = ln.replace(',',';')
 		f.write(ln+'\n')
-		prev_status = status
+		#prev_status = status
 
 	f.close()
 	f0.close()
