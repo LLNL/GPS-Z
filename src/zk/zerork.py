@@ -15,15 +15,15 @@ BASE_YML="""
 mechFile: {MECHDIR}/chem.inp
 thermFile: {MECHDIR}/therm.dat
 idtFile: {IDTFILE}
-#thistFile: {THFILE}
 thistFile: /dev/null
 logFile: {CKFILE}
 fuel_mole_fracs: {{ {FUEL_FRACS} }}
 oxidizer_mole_fracs: {{ {OXID_FRACS} }}
 trace_mole_fracs: {{ {TRACE_FRACS} }} #this is just for printing
-delta_T_ignition: 400.0
-stop_time: 1.0
-print_time: 1.0
+temperature_deltas: [400.0]
+temperature_print_resolution: 0.5
+stop_time: 10.0
+print_time: 10.0
 relative_tolerance: 1.0e-8
 absolute_tolerance: 1.0e-20
 initial_temperatures: [ {TEMP} ]
@@ -34,7 +34,7 @@ preconditioner_thresholds: [ 2.048e-3 ]
 eps_lin: 0.05
 nonlinear_convergence_coefficient: 0.05
 long_output: 1
-one_step_mode: 1
+one_step_mode: 0
 print_net_rates_of_progress: 1
 continue_after_ignition: 0
 """
