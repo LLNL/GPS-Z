@@ -10,15 +10,15 @@ This repo ([GPS-Z](https://github.com/llnl/GPS-Z)) is a fork of the original rep
 This repo is developed with Python 3.x and depends on many packages. The recommended way to install most dependencies is with [Anaconda](https://www.anaconda.com/distribution/). 
 * You can simply set up the environment by typing `conda env create -f env.yml`.
 
-The user will also need to provide an installation of Zero-RK by following instructions in the [Zero-RK repo](https://github.com/llnl/zero-rk).  After Zero-RK is installed, GPS-Z will try to find the IDT executable by examining environment variable `ZERORK_EXE`, which should point to `constVolumeWSR.x` in the Zero-RK installation folder.
+The user will also need to provide an installation of Zero-RK by following instructions in the [Zero-RK repo](https://github.com/llnl/zero-rk).  After Zero-RK is installed, GPS-Z will try to find the IDT executable by examining environment variable `ZERORK_HOME`, which should point to the Zero-RK installation folder.
 
 ## How to use
 * Activate the anaconda environment: `conda activate gps`
 * Start GPS: `python GPS.py`
 
-for more detailed tutorial, please see [Tutorial_v1.0.0.pdf](https://github.com/golsun/GPS/blob/master/Tutorial_v1.0.0.pdf).
+For a more detailed tutorial, please see [Tutorial_v1.0.0.pdf](https://github.com/golsun/GPS/blob/master/Tutorial_v1.0.0.pdf).
 
-After the GPS project has been configured via the GUI, it can be run via the GUI or can also be run in "headless" mode to enable submitting jobs via a batch-scheduling system on HPC clusters.  An example job script is given below, but will need to be adapted to the users cluster environment (e.g. moab, slurm, lfs, etc.).
+After the GPS project has been configured via the GUI, it can be run via the GUI or can also be run in "headless" mode to enable submitting jobs via a batch-scheduling system on HPC clusters.  An example job script is given below, but will need to be adapted to the user's cluster environment (e.g. moab, slurm, lfs, etc.).
 
 ```
 #!/bin/bash
@@ -41,7 +41,7 @@ To improve the accuracy of reduced mechanisms, GPS considers all-generation rela
 
 When using GPS-Z version of GPS, please also site the Zero-RK theory paper:
 
-> M.J. McNenly, R.A. Whitesides, and D.L. Flowers, Faster solvers for large kinetic mechanisms using adaptive preconditioners. Proceedings of the Combustion Institute, 35(1) (2015) 581-587. [[link](https://doi.org/10.1016/j.proci.2014.05.113)]
+* M.J. McNenly, R.A. Whitesides, and D.L. Flowers, Faster solvers for large kinetic mechanisms using adaptive preconditioners. Proceedings of the Combustion Institute, 35(1) (2015) 581-587. [[link](https://doi.org/10.1016/j.proci.2014.05.113)]
    
 
 ## Related publication
