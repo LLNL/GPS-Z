@@ -1,0 +1,141 @@
+{
+  "dir_public": "PWD/test_inputs",
+  "oxid": {
+    "air": {
+      "composition": {
+        "O2": 0.21,
+        "N2": 0.79
+      },
+      "name_cust": true,
+      "name": "air"
+    }
+  },
+  "fuel": {
+    "H2": {
+      "name": "H2",
+      "composition": {
+        "H2": 1.0
+      },
+      "name_cust": false
+    }
+  },
+  "database": {
+    "database_0": {
+      "fuel": [
+        "H2"
+      ],
+      "oxid": [
+        "air"
+      ],
+      "reactor": "autoignition",
+      "phi": [
+        1.0
+      ],
+      "T0": [
+        1000.0,
+        1100,
+        1200,
+        1300,
+        1400,
+        1500
+      ],
+      "atm": [
+        1,
+        5,
+        30.0
+      ],
+      "train": true,
+      "test": true,
+      "name": "database_0",
+      "case": []
+    }
+  },
+  "GPS": {
+    "GPS_0": {
+      "alpha": [
+        0.1
+      ],
+      "beta": [
+        0.5
+      ],
+      "gamma": [
+        0.5,
+        0.75
+      ],
+      "K": [
+        1.0
+      ],
+      "iso_enable": false,
+      "iso": "default",
+      "checked": true,
+      "must_keep": [],
+      "name": "GPS_0",
+      "es": "default"
+    }
+  },
+  "mech": {
+    "detailed": {
+      "name": "detailed",
+      "chem": "PWD/test_inputs/grimech30.dat",
+      "therm": "PWD/test_inputs/thermo30.dat",
+      "desk": "PWD/test_inputs/detailed"
+    }
+  },
+  "es": {
+    "default": {
+      "name": "default",
+      "element": {
+        "O": {
+          "only_hub": true,
+          "source": [],
+          "target": [],
+          "traced": true,
+          "cust": false,
+          "name": "O"
+        },
+        "H": {
+          "only_hub": false,
+          "source": [
+            "!fuel!"
+          ],
+          "target": [
+            "H2O"
+          ],
+          "traced": true,
+          "cust": false,
+          "name": "H"
+        },
+        "C": {
+          "only_hub": false,
+          "source": [
+            "!fuel!"
+          ],
+          "target": [
+            "CO2"
+          ],
+          "traced": true,
+          "cust": false,
+          "name": "C"
+        },
+        "N": {
+          "only_hub": true,
+          "source": [],
+          "target": [],
+          "traced": false,
+          "cust": false,
+          "name": "N"
+        },
+        "Ar": {
+          "only_hub": true,
+          "source": [],
+          "target": [],
+          "traced": false,
+          "cust": false,
+          "name": "Ar"
+        }
+      }
+    }
+  },
+  "rename": {},
+  "version": "GPS v2.0, copyright © Xiang Gao, Prof. Wenting Sun's group @ Georgia Tech"
+}

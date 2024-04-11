@@ -1,6 +1,8 @@
 #!/bin/bash
 
 shopt -s globstar
+
+sed "s|PWD|${PWD}|" test_inputs/project_base.json > test_inputs/project.json
 cd ..
 
 d=test_inputs
@@ -9,7 +11,7 @@ function run() {
   label=$1
   rm -rf test/${d}/GPS test/${d}/detailed/raw
   echo "Testing ${label}..."
-  time python gps_headless.py test/${d}/project.json > test/${label}.log
+  time python gps_headless.py test/${d}/project.json >& test/${label}.log
   mv test/${d}/GPS/**/chem.cti test/${label}.cti
 }
 
