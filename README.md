@@ -2,7 +2,7 @@
 
 [Global Pathway Selection](https://www.sciencedirect.com/science/article/pii/S0010218016000638) (GPS) is an algorithm to effectively generates reduced (skeletal) chemistry mechanisms, which speeds up simulations and can be used as a systematic analytics tool to extract insights from complex reacting system.
 
-This repo ([GPS-Z] (https://github.com/llnl/GPS-Z)) is a fork of the original repository to use [Zero-RK] (https://github.com/llnl/zero-rk) for accelerated solution of ignition delay problems. GPS-Z also uses python's multiprocessing library to enable parallel evaluation of GPS algorithm tasks.
+This repo ([GPS-Z](https://github.com/llnl/GPS-Z)) is a fork of the original repository to use [Zero-RK](https://github.com/llnl/zero-rk) for accelerated solution of ignition delay problems. GPS-Z also uses python's multiprocessing library to enable parallel evaluation of GPS algorithm tasks.
 
 ![](https://github.com/llnl/GPS-Z/blob/master/ui/ui_main.PNG)
 
@@ -10,7 +10,7 @@ This repo ([GPS-Z] (https://github.com/llnl/GPS-Z)) is a fork of the original re
 This repo is developed with Python 3.x and depends on many packages. The recommended way to install most dependencies is with [Anaconda](https://www.anaconda.com/distribution/). 
 * You can simply set up the environment by typing `conda env create -f env.yml`.
 
-The user will also need to provide an installation of Zero-RK by following instructions in the [Zero-RK repo] (https://github.com/llnl/zero-rk).  After Zero-RK is installed, GPS-Z will try to find the IDT executable by examining environment variable `ZERORK_EXE`, which should point to `constVolumeWSR.x` in the Zero-RK installation folder.
+The user will also need to provide an installation of Zero-RK by following instructions in the [Zero-RK repo](https://github.com/llnl/zero-rk).  After Zero-RK is installed, GPS-Z will try to find the IDT executable by examining environment variable `ZERORK_EXE`, which should point to `constVolumeWSR.x` in the Zero-RK installation folder.
 
 ## How to use
 * Activate the anaconda environment: `conda activate gps`
