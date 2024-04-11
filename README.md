@@ -27,9 +27,8 @@ After the GPS project has been configured via the GUI, it can be run via the GUI
 conda activate gps
 
 export ZERORK_HOME=/path/to/zerork
-export ZERORK_EXE=${ZERORK_HOME}/bin/constVolumeWSR.x
 export GPS_HOME=/path/to/GPS
-export PYTHONPATH=${GPS_HOME}
+export PYTHONPATH=${GPS_HOME}:${PYTHONPATH}
 
 python ${GPS_HOME}/gps_headless.py project_dir/project.json >& gps.log
 ```
