@@ -43,10 +43,14 @@ from src.core.def_GPSA import find_GPSA
 """
 
 def PoolWrapper(*args, **kwargs):
+    p = None
     try:
         p = int(os.environ['GPS_NUM_PROCS'])
-        return Pool(p, *args, **kwargs)
     except:
+        p = None
+    if p:
+        return Pool(p, *args, **kwargs)
+    else:
         return Pool(*args, **kwargs)
 
 
