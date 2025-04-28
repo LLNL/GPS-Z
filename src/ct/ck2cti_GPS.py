@@ -975,7 +975,7 @@ class Parser(object):
         # column 80 on the first line of the thermo entry
         if len(lines[0]) > 80:
             elements = lines[0][80:]
-            composition2 = self.parseComposition(elements, len(elements)//10, 10)
+            composition2 = self.parseComposition(elements, len(elements)//15, 15)
             composition.update(composition2)
 
         if not composition:
@@ -1540,7 +1540,9 @@ class Parser(object):
                     if line is not None and not contains(line, 'END'):
                         TintDefault = float(line.split()[1])
                     thermo = []
+                    continuation = False
                     while line is not None and not contains(line, 'END'):
+
                         # Grudging support for implicit end of section
                         if line.strip()[:4].upper() in ('REAC', 'TRAN'):
                             self.warn('"THERMO" section implicitly ended by start of '
@@ -1549,8 +1551,16 @@ class Parser(object):
                             tokens.pop()
                             break
 
-                        if len(line) >= 80 and line[79] in ['1', '2', '3', '4']:
-                            thermo.append(line)
+                        if (len(line) >= 80 and line[79] in ['1', '2', '3', '4']) or continuation:
+                            if(len(line)>80 and line[80]=="&"):
+                                continuation=True
+                                thermo.append(line[0:80])
+                            elif continuation:
+                                continuation=False
+                                thermo[-1] += line
+                                line = thermo[-1]
+                            else:
+                                thermo.append(line)
                             if line[79] == '4':
                                 label, thermo, comp, note = self.readThermoEntry(thermo, TintDefault)
                                 if label not in self.speciesDict:
