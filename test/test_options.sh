@@ -11,7 +11,7 @@ function run() {
   label=$1
   rm -rf test/${d}/GPS test/${d}/detailed/raw
   echo "Testing ${label}..."
-  time python gps_headless.py test/${d}/project.json >& test/${label}.log
+  time python3 gps_headless.py test/${d}/project.json >& test/${label}.log
   mv test/${d}/GPS/**/chem.cti test/${label}.cti
 }
 
