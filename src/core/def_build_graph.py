@@ -106,7 +106,7 @@ def build_flux_graph(soln, raw, traced_element, path_save=None, overwrite=False,
 
 					# note that the direction (source-->target) is already assured
 					# therefore we use abs(RR) here
-					dw = float(n_i2j * abs(rr[id_rxn]))
+					dw = max(float(n_i2j * abs(rr[id_rxn])),1.0e-80)
 
 					try:
 						flux_graph[source][target]['flux'] += dw
