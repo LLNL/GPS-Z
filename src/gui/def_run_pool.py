@@ -16,7 +16,7 @@ from PyQt5.QtCore import *
 from src.core.def_tools import *
 from src.ct.def_ct_tools import Xstr
 from src.ct.senkin import senkin
-from src.zk.zerork import zerork
+from src.zk.zerork import zerork, zerork_S_curve
 from src.ct.psr import S_curve
 from src.ck.def_cheminp import skeletal
 from src.ct.ck2cti_GPS import ck2cti
@@ -193,8 +193,8 @@ def find_raw(soln, soln_in, dir_desk, fuel, \
                    soln.species_names, soln.reaction_equations(), dir_raw=dir_raw,
                    eps=eps)
         elif reactor == 'PSR extinction':
-            X0 = Xstr(soln, fuel['composition'], phi, oxid['composition'])    
-            S_curve(soln_in, soln, atm, T0, X0, dir_raw=dir_raw)
+            zerork_S_curve(dir_desk, atm, T0, fuel['composition'], oxid['composition'], phi,
+                   soln.species_names, soln.reaction_equations(), dir_raw=dir_raw)
 
 
 
