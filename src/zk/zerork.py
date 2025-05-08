@@ -189,6 +189,7 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
             #else:
             zerork_out=subprocess.check_output([ZERORK_EXE,zerork_infile_name],
                                                 stderr=subprocess.STDOUT,universal_newlines=True, env=env).split('\n')
+            raw = read_zerork_outfile(zerork_out)
             shutil.rmtree(tmpdir)
 
         except subprocess.CalledProcessError as e:
@@ -203,7 +204,6 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
 
             zerork_out_file.close()
 
-        raw = read_zerork_outfile(zerork_out)
 
     except Exception as e:
        raise e
