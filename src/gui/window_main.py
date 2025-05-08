@@ -299,10 +299,8 @@ class window_main(common):
 	def act_browse(self):
 		self.project = self.project
 		self.w = self.w
-		dir_parent = self.dir_parent
 
-
-		dir_public = str(QFileDialog.getExistingDirectory(self.w, '', dir_parent.replace('Contents/Resources',''), QFileDialog.ShowDirsOnly))
+		dir_public = str(QFileDialog.getExistingDirectory(self.w, '', self.cwd.replace('Contents/Resources',''), QFileDialog.ShowDirsOnly))
 		if bool(dir_public):
 
 
@@ -753,7 +751,12 @@ class window_main(common):
 
 		# self.variables ============================
 
-		self.dir_parent = os.getcwd()
+		self.cwd = os.getcwd()
+		gps_home = os.getenv('GPS_HOME')
+		if gps_home is not None:
+		    self.dir_parent = gps_home
+		else:
+		    self.dir_parent = self.cwd
 		self.dir_ui = os.path.join(self.dir_parent,'ui')
 
 		self.soln = dict()
