@@ -148,13 +148,13 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
     
     p = ct.one_atm * atm
 
-    fuel_fracs_str = ','.join([str(k)+": " + str(v) for k,v in fuel_fracs.items()])
-    oxid_fracs_str = ','.join([str(k)+": " + str(v) for k,v in oxid_fracs.items()])
+    fuel_fracs_str = ','.join([f'"{k}": ' + str(v) for k,v in fuel_fracs.items()])
+    oxid_fracs_str = ','.join([f'"{k}": ' + str(v) for k,v in oxid_fracs.items()])
     other_species = []
     for sp in species_names:
         if sp not in fuel_fracs and sp not in oxid_fracs:
             other_species.append(sp)
-    trace_fracs_str = ',\n'.join([str(sp)+": 0" for sp in other_species])
+    trace_fracs_str = ',\n'.join([f'"{sp}": 0' for sp in other_species])
 
     #Write zero-rk input file
     error_return = False
@@ -246,16 +246,16 @@ def zerork_psr(dir_desk, tau, p, T0, fuel_fracs, oxid_fracs, phi, species_names,
     cpu0 = time.time()
     raw = None
 
-    fuel_fracs_str = ','.join([str(k)+": " + str(v) for k,v in fuel_fracs.items()])
-    oxid_fracs_str = ','.join([str(k)+": " + str(v) for k,v in oxid_fracs.items()])
+    fuel_fracs_str = ','.join([f'"{k}": ' + str(v) for k,v in fuel_fracs.items()])
+    oxid_fracs_str = ','.join([f'"{k}": ' + str(v) for k,v in oxid_fracs.items()])
     other_species = []
     for sp in species_names:
         if sp not in fuel_fracs and sp not in oxid_fracs:
             other_species.append(sp)
-    trace_fracs_str = ',\n'.join([str(sp)+": 0" for sp in other_species])
+    trace_fracs_str = ',\n'.join([f'"{sp}": 0' for sp in other_species])
     full_fracs_str = ""
     if(full_fracs is not None):
-        full_fracs_str = ',\n'.join([str(k)+": " + str(v) for k,v in full_fracs.items()])
+        full_fracs_str = ',\n'.join(['"{k}": {v}' for k,v in full_fracs.items()])
 
     #Write zero-rk input file
     error_return = False

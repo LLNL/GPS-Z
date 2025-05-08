@@ -32,10 +32,8 @@ def fun_cleanck(dir_desk_mech):
 	for ln0 in f0:
 		ln = ln0
 		if 'TROE' in ln.upper() or 'LOW' in ln.upper():
-			#print 'TROE or LOW found'
 			ln = ln.replace(',',' ')
 
-		ln = ln.replace(',',';')
 		f.write(ln)
 
 	f.close()
@@ -49,32 +47,9 @@ def fun_cleanck(dir_desk_mech):
 	f0 = open(p0,'r')
 	f = open(os.path.join(dir_desk_mech,'therm.dat'),'w')
 
-	prev_status = None
-	reg_len = 80
 	for ln0 in f0:
-
 		ln = ln0.rstrip()
-
-		#if bool(ln):
-			#if ln[0] == '!':
-			#	status = 0
-			#elif len(ln)>70 and ln[-1] in ['1','2','3','4']:
-			#	status = int(ln[-1])
-			#	if len(ln) < reg_len:
-			#		ln = ln[:-2] + ' '*(reg_len - len(ln)) + ln[-2:]
-			#	elif len(ln) > reg_len:
-			#		ln = ln[:-2 - (len(ln)-reg_len)] + ln[-2:]
-			#else:
-			#	if prev_status == 3:
-			#		ln = ln + ' '*(reg_len-len(ln)-1) + '4'
-			#		status = 4
-			#	else:
-			#		status = None
-
-
-		ln = ln.replace(',',';')
 		f.write(ln+'\n')
-		#prev_status = status
 
 	f.close()
 	f0.close()
