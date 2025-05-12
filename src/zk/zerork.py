@@ -48,8 +48,8 @@ thistFile: /dev/null
 logFile: {CKFILE}
 delta_T_ignition: 400.0
 temperature_print_resolution: 0.5
-stop_time: {TENTAU}
-print_time: {TENTAU}
+stop_time: {ENDTIME}
+print_time: {ENDTIME}
 relative_tolerance: 1.0e-6
 absolute_tolerance: 1.0e-14
 initial_temperatures: [ {TEMP} ]
@@ -68,7 +68,7 @@ fuel_mole_fracs: {{ {FUEL_FRACS} }}
 oxidizer_mole_fracs: {{ {OXID_FRACS} }}
 trace_mole_fracs: {{ {TRACE_FRACS} }} #this is just for printing
 full_mole_fracs: {{ {FULL_FRACS} }} 
-pressure_controller_coefficient: 1.0e-6
+pressure_controller_coefficient: 1.0
 use_equilibrium_for_initialization: n
 ignition_temperature: 2500
 """
@@ -263,7 +263,7 @@ def zerork_psr(dir_desk, tau, p, T0, fuel_fracs, oxid_fracs, phi, species_names,
                 PRES=p,
                 PHI=phi,
                 TAU=tau,
-                TENTAU=10*tau,
+                ENDTIME=200*tau,
                 OXID_FRACS=oxid_fracs_str,
                 FUEL_FRACS=fuel_fracs_str,
                 TRACE_FRACS=trace_fracs_str,
@@ -316,7 +316,7 @@ def zerork_psr(dir_desk, tau, p, T0, fuel_fracs, oxid_fracs, phi, species_names,
     return raw
 
 
-def zerork_S_curve(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_equations, eps=0.05, dir_raw=None):
+def zerork_S_curve(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_equations, eps=0.005, dir_raw=None):
 
     print('>'*30)
     print('zerork S-curve for phi='+ str(phi) + ' at '+ str(atm)+'atm' + ' and '+str(T0)+'K')
@@ -373,6 +373,24 @@ def zerork_S_curve(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names
             save_raw_npz(raw, os.path.join(dir_raw,'raw_temp.npz'))
 
         tau *= tau_r
+
+    resample = True
+    if(resample):
+        rdp_array = [ np.array([np.log(x),y/1000]) for x,y in zip(np.flip(raw_burn['axis0']),np.flip(raw_burn['temperature'])) ]
+        resampled = rdp(rdp_array, epsilon=eps)
+
+        resample_tau = np.array([ np.exp(x[0]) for x in resampled ])
+        for key in ['temperature', 'pressure', 'volume', 'mole', 'heat_release_rate']:
+            out = np.interp(resample_tau, np.flip(raw_burn['axis0']), np.flip(raw_burn[key]))
+            raw_burn[key] = np.flip(out)
+        for key in ['net_reaction_rate', 'mole_fraction']:
+            new_mat = np.zeros( (resample_tau.shape[0], raw_burn[key].shape[1]) )
+            for col in range(raw_burn[key].shape[1]):
+                new_mat[:,col] = np.flip(np.interp(resample_tau,
+                                                   np.flip(raw_burn['axis0']),
+                                                   np.flip(raw_burn[key][:,col].flat)))
+            raw_burn[key] = new_mat
+        raw_burn['axis0'] = np.flip(resample_tau)
 
     raw_burn = save_raw_npz(raw_burn, os.path.join(dir_raw,'raw.npz'))
     save_raw_csv(raw_burn, species_names, rxn_equations, dir_raw)
