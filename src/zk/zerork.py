@@ -20,8 +20,8 @@ logFile: {CKFILE}
 fuel_mole_fracs: {{ {FUEL_FRACS} }}
 oxidizer_mole_fracs: {{ {OXID_FRACS} }}
 trace_mole_fracs: {{ {TRACE_FRACS} }} #this is just for printing
-temperature_deltas: [400.0]
-temperature_print_resolution: 0.5
+temperature_deltas: {TEMPERATURE_DELTAS}
+temperature_print_resolution: {PRINT_RESOLUTION}
 stop_time: 10.0
 print_time: 10.0
 relative_tolerance: 1.0e-8
@@ -139,7 +139,7 @@ def read_zerork_outfile(zerork_out):
 
     return raw
 
-def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_equations, eps=0.05, dir_raw=None):
+def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_equations, is_fine=False, dir_raw=None):
     cpu0 = time.time()
 
     print('>'*30)
@@ -156,6 +156,11 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
             other_species.append(sp)
     trace_fracs_str = ',\n'.join([f'"{sp}": 0' for sp in other_species])
 
+    temperature_deltas="[2, 5, 10, 15, 20, 25, 50, 75, 100, 200, 300, 400.0]"
+    print_resolution='1000.0'
+    if(is_fine):
+        temperature_deltas="[400.0]"
+        print_resolution='2.0'
     #Write zero-rk input file
     error_return = False
     try:
@@ -172,7 +177,9 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
                 PHI=phi,
                 OXID_FRACS=oxid_fracs_str,
                 FUEL_FRACS=fuel_fracs_str,
-                TRACE_FRACS=trace_fracs_str))
+                TRACE_FRACS=trace_fracs_str,
+                TEMPERATURE_DELTAS=temperature_deltas,
+                PRINT_RESOLUTION=print_resolution))
 
         zerork_out=[]
         env = dict(os.environ)
@@ -214,22 +221,6 @@ def zerork(dir_desk, atm, T0, fuel_fracs, oxid_fracs, phi, species_names, rxn_eq
     if(error_return or len(raw['axis0']) == 0):
         print(f"Zero-rk failed: {atm}, {T0}, {phi}")
         raise ValueError
-
-    ign_delay = raw['axis0'][-1]
-    rdp_array = [ np.array([x,y]) for x,y in zip(raw['axis0'],raw['temperature']) ]
-    resampled = rdp(rdp_array, epsilon=eps*ign_delay)
-
-    #resample_time = np.linspace(0, ign_delay, 100)
-    resample_time = np.array([ x[0] for x in resampled ])
-    for key in ['temperature', 'pressure', 'volume', 'mole', 'heat_release_rate']:
-        out = np.interp(resample_time, raw['axis0'], raw[key])
-        raw[key] = out
-    for key in ['net_reaction_rate', 'mole_fraction']:
-        new_mat = np.zeros( (resample_time.shape[0], raw[key].shape[1]) )
-        for col in range(raw[key].shape[1]):
-            new_mat[:,col] = np.interp(resample_time, raw['axis0'], raw[key][:,col].flat)
-        raw[key] = new_mat
-    raw['axis0'] = resample_time
 
     print('n_points = ' + str(len(raw['axis0'])))
     print('CPU time = '+str(time.time() - cpu0))

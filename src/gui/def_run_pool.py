@@ -185,13 +185,13 @@ def find_raw(soln, soln_in, dir_desk, fuel, \
             S_curve(soln_in, soln, atm, T0, X0, dir_raw=dir_raw)
     else:
         if 'autoignition' in reactor:
-            eps = 0.05
+            is_fine=False
             if 'fine' in reactor:
-                eps = 0.005
+                is_fine = True
             #TODO: Full (which runs to equilibrium)
             zerork(dir_desk, atm, T0, fuel['composition'], oxid['composition'], phi,
                    soln.species_names, soln.reaction_equations(), dir_raw=dir_raw,
-                   eps=eps)
+                   is_fine=is_fine)
         elif reactor == 'PSR extinction':
             zerork_S_curve(dir_desk, atm, T0, fuel['composition'], oxid['composition'], phi,
                    soln.species_names, soln.reaction_equations(), dir_raw=dir_raw)
