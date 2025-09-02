@@ -46,24 +46,20 @@ idtFile: {IDTFILE}
 #thistFile: {THFILE}
 thistFile: /dev/null
 logFile: {CKFILE}
-delta_T_ignition: 400.0
-temperature_print_resolution: 0.5
 stop_time: {ENDTIME}
 print_time: {ENDTIME}
-relative_tolerance: 1.0e-6
-absolute_tolerance: 1.0e-14
+relative_tolerance: 1.0e-8
+absolute_tolerance: 1.0e-18
 initial_temperatures: [ {TEMP} ]
 initial_pressures: [ {PRES} ]
 initial_phis: [ {PHI} ]
 initial_egrs: [ 0.0 ]
 residence_times: [ {TAU} ]
-preconditioner_thresholds: [ 2.048e-3 ]
+preconditioner_thresholds: [ 1.0e-6 ]
 eps_lin: 0.05
 nonlinear_convergence_coefficient: 0.05
 long_output: 1
-one_step_mode: 0
 print_net_rates_of_progress: 1
-continue_after_ignition: 0
 fuel_mole_fracs: {{ {FUEL_FRACS} }}
 oxidizer_mole_fracs: {{ {OXID_FRACS} }}
 trace_mole_fracs: {{ {TRACE_FRACS} }} #this is just for printing
@@ -311,7 +307,10 @@ def zerork_psr(dir_desk, tau, p, T0, fuel_fracs, oxid_fracs, phi, species_names,
     #    print(f"Zero-rk failed: {p}, {T0}, {phi}")
     #    raise ValueError
 
-    print('n_points = ' + str(len(raw['axis0'])))
+    if(raw):
+        print('n_points = ' + str(len(raw['axis0'])))
+    else:
+        print("No data from Zero-RK")
     print('CPU time = '+str(time.time() - cpu0))
     return raw
 
